@@ -57,6 +57,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        sage: {
+          DEFAULT: "hsl(var(--sage))",
+          light: "hsl(var(--sage-light))",
+        },
+        "warm-beige": "hsl(var(--warm-beige))",
+        "soft-green": "hsl(var(--soft-green))",
       },
       borderRadius: {
         lg: "var(--radius)",

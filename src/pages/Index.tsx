@@ -1,12 +1,35 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Navigation from "@/components/Navigation";
+import LoginForm from "@/components/LoginForm";
+import studyIllustration from "@/assets/study-illustration.png";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      <main className="flex-1 flex items-center justify-center min-h-[calc(100vh-80px)] px-6 py-12">
+        <div className="w-full max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+          {/* Illustration Section */}
+          <div className="flex items-center justify-center lg:justify-start">
+            <div className="relative">
+              <div className="w-80 h-80 lg:w-96 lg:h-96 bg-warm-beige rounded-2xl flex items-center justify-center overflow-hidden">
+                <img
+                  src={studyIllustration}
+                  alt="People collaborating and studying together"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Login Form Section */}
+          <div className="flex items-center justify-center lg:justify-end">
+            <div className="w-full max-w-md">
+              <LoginForm />
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
