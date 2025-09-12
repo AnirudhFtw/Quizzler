@@ -48,7 +48,15 @@ const Dashboard = () => {
         {/* Action Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {actionCards.map((card, index) => (
-            <Card key={index} className="cursor-pointer hover:shadow-lg transition-shadow">
+            <Card 
+              key={index} 
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => {
+                if (card.title === "Take Trivia Quiz") {
+                  window.location.href = '/find-quiz';
+                }
+              }}
+            >
               <CardContent className="p-6">
                 <div className="flex items-center space-x-4">
                   <div className={`${card.color} p-3 rounded-full`}>

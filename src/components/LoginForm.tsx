@@ -11,6 +11,8 @@ const LoginForm = () => {
     e.preventDefault();
     // Handle form submission here
     console.log("Login attempt:", { email, password });
+    // Redirect to dashboard after login
+    window.location.href = '/dashboard';
   };
 
   return (
