@@ -1,0 +1,102 @@
+import Navigation from "@/components/Navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { BookOpen, Plus, BarChart3, User, Search } from "lucide-react";
+
+const Dashboard = () => {
+  const actionCards = [
+    {
+      icon: BookOpen,
+      title: "Take Trivia Quiz",
+      description: "Test your skills",
+      color: "bg-soft-green"
+    },
+    {
+      icon: Plus,
+      title: "Create a Quiz",
+      description: "Design your own challenge",
+      color: "bg-soft-green"
+    },
+    {
+      icon: BarChart3,
+      title: "View Leaderboards",
+      description: "See who's on top",
+      color: "bg-soft-green"
+    },
+    {
+      icon: User,
+      title: "My Profile",
+      description: "Manage your account",
+      color: "bg-soft-green"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      <main className="container mx-auto px-6 py-8">
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Welcome back, Sarah!
+          </h1>
+          <p className="text-muted-foreground">
+            Ready to challenge your knowledge or create a new quiz?
+          </p>
+        </div>
+
+        {/* Action Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {actionCards.map((card, index) => (
+            <Card key={index} className="cursor-pointer hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className={`${card.color} p-3 rounded-full`}>
+                    <card.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground">
+                      {card.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm">
+                      {card.description}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Quick Stats Section */}
+        <div className="mt-12">
+          <h2 className="text-xl font-semibold text-foreground mb-4">
+            Quick Stats
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card>
+              <CardContent className="p-4 text-center">
+                <div className="text-2xl font-bold text-primary">12</div>
+                <div className="text-muted-foreground text-sm">Quizzes Taken</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4 text-center">
+                <div className="text-2xl font-bold text-primary">85%</div>
+                <div className="text-muted-foreground text-sm">Average Score</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4 text-center">
+                <div className="text-2xl font-bold text-primary">#3</div>
+                <div className="text-muted-foreground text-sm">Leaderboard Rank</div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Dashboard;
