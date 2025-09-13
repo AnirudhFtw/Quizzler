@@ -14,11 +14,11 @@ const Navigation = () => {
         <a href="#" className="text-foreground hover:text-sage transition-colors">
           Home
         </a>
-        <a href="#" className="text-foreground hover:text-sage transition-colors">
-          About
+        <a href="/leaderboard" className="text-foreground hover:text-sage transition-colors">
+          Leaderboard
         </a>
         <a href="#" className="text-foreground hover:text-sage transition-colors">
-          Contact
+          Results
         </a>
       </div>
     </nav>
