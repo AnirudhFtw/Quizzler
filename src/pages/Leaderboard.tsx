@@ -23,50 +23,50 @@ const Leaderboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-900">
       <Navigation />
       
       <main className="container mx-auto px-6 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Leaderboard</h1>
-          <p className="text-muted-foreground">See how you stack up against other quizzlers</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Leaderboard</h1>
+          <p className="text-slate-400">See how you stack up against other quizzlers</p>
         </div>
 
         <Tabs defaultValue="global" className="max-w-4xl mx-auto">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="global">Global</TabsTrigger>
-            <TabsTrigger value="national">National</TabsTrigger>
-            <TabsTrigger value="regional">Regional</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 mb-8 bg-slate-800 border-slate-700">
+            <TabsTrigger value="global" className="data-[state=active]:bg-green-600 data-[state=active]:text-white text-slate-300">Global</TabsTrigger>
+            <TabsTrigger value="national" className="data-[state=active]:bg-green-600 data-[state=active]:text-white text-slate-300">National</TabsTrigger>
+            <TabsTrigger value="regional" className="data-[state=active]:bg-green-600 data-[state=active]:text-white text-slate-300">Regional</TabsTrigger>
           </TabsList>
 
           <TabsContent value="global">
-            <Card>
+            <Card className="bg-slate-800 border-slate-700">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="border-b">
+                    <thead className="border-b border-slate-700">
                       <tr className="text-left">
-                        <th className="px-6 py-4 font-medium text-muted-foreground">Rank</th>
-                        <th className="px-6 py-4 font-medium text-muted-foreground">Name</th>
-                        <th className="px-6 py-4 font-medium text-muted-foreground">Score</th>
-                        <th className="px-6 py-4 font-medium text-muted-foreground">Quizzes Completed</th>
+                        <th className="px-6 py-4 font-medium text-slate-400">Rank</th>
+                        <th className="px-6 py-4 font-medium text-slate-400">Name</th>
+                        <th className="px-6 py-4 font-medium text-slate-400">Score</th>
+                        <th className="px-6 py-4 font-medium text-slate-400">Quizzes Completed</th>
                       </tr>
                     </thead>
                     <tbody>
                       {leaderboardData.map((user) => (
-                        <tr key={user.rank} className="border-b hover:bg-muted/50">
+                        <tr key={user.rank} className="border-b border-slate-700 hover:bg-slate-700/50">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
                               {getRankIcon(user.rank)}
                             </div>
                           </td>
-                          <td className="px-6 py-4 font-medium text-foreground">{user.name}</td>
+                          <td className="px-6 py-4 font-medium text-white">{user.name}</td>
                           <td className="px-6 py-4">
-                            <Badge variant="secondary" className="bg-soft-green text-white">
+                            <Badge variant="secondary" className="bg-green-600 text-white">
                               {user.score}
                             </Badge>
                           </td>
-                          <td className="px-6 py-4 text-muted-foreground">{user.quizzes}</td>
+                          <td className="px-6 py-4 text-slate-400">{user.quizzes}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -77,17 +77,17 @@ const Leaderboard = () => {
           </TabsContent>
 
           <TabsContent value="national">
-            <Card>
+            <Card className="bg-slate-800 border-slate-700">
               <CardContent className="p-8 text-center">
-                <p className="text-muted-foreground">National leaderboard coming soon...</p>
+                <p className="text-slate-400">National leaderboard coming soon...</p>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="regional">
-            <Card>
+            <Card className="bg-slate-800 border-slate-700">
               <CardContent className="p-8 text-center">
-                <p className="text-muted-foreground">Regional leaderboard coming soon...</p>
+                <p className="text-slate-400">Regional leaderboard coming soon...</p>
               </CardContent>
             </Card>
           </TabsContent>

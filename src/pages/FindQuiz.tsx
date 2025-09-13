@@ -16,6 +16,15 @@ const FindQuiz = () => {
 
   const quizzes = [
     {
+      title: "Demo Quiz",
+      category: "Demo",
+      difficulty: "Easy",
+      participants: "Demo",
+      color: "bg-gradient-to-br from-indigo-400 to-indigo-600",
+      icon: "🎯",
+      isDemo: true
+    },
+    {
       title: "Sports Trivia",
       category: "Sports",
       difficulty: "Medium",
@@ -137,7 +146,10 @@ const FindQuiz = () => {
                       {quiz.participants} played
                     </span>
                   </div>
-                  <Button className="w-full bg-soft-green hover:bg-soft-green/90">
+                  <Button 
+                    className="w-full bg-soft-green hover:bg-soft-green/90"
+                    onClick={() => quiz.isDemo ? window.location.href = '/take-quiz' : null}
+                  >
                     Start Quiz
                   </Button>
                 </div>
