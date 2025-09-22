@@ -11,14 +11,11 @@ const Navigation = () => {
       </div>
       
       <div className="hidden md:flex items-center space-x-8">
-        <a href="/" className="text-foreground hover:text-sage transition-colors">
+        <a href="/dashboard" className="text-foreground hover:text-sage transition-colors">
           Home
         </a>
         <a href="/find-quiz" className="text-foreground hover:text-sage transition-colors">
           Quizzes
-        </a>
-        <a href="/leaderboard" className="text-foreground hover:text-sage transition-colors">
-          Leaderboard
         </a>
         <a href="#" className="text-foreground hover:text-sage transition-colors">
           Results
