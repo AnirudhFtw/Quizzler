@@ -134,11 +134,10 @@ const TakeQuiz = () => {
             Previous
           </Button>
           <Button 
-            onClick={handleNext}
-            disabled={currentQuestion === questions.length - 1}
+            onClick={currentQuestion === questions.length - 1 ? () => window.location.href = '/quiz-results' : handleNext}
             className="bg-soft-green hover:bg-soft-green/90"
           >
-            Next
+            {currentQuestion === questions.length - 1 ? 'Finish Attempt' : 'Next'}
           </Button>
         </div>
       </main>

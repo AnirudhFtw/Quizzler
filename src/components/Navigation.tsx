@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 const Navigation = () => {
   return (
-    <nav className="w-full px-6 py-4 flex items-center justify-between bg-background border-b border-border">
+    <nav className="w-full px-6 py-4 flex items-center justify-between bg-background/95 backdrop-blur-sm border-b border-border/20">
       <div className="flex items-center space-x-2">
         <div className="w-6 h-6 bg-primary rounded-sm flex items-center justify-center">
           <div className="w-3 h-3 bg-background rounded-sm"></div>
