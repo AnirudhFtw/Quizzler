@@ -14,12 +14,9 @@ const Navigation = () => {
         <a href="/dashboard" className="text-foreground hover:text-sage transition-colors">
           Home
         </a>
-        <a href="/find-quiz" className="text-foreground hover:text-sage transition-colors">
-          Quizzes
-        </a>
-        <a href="#" className="text-foreground hover:text-sage transition-colors">
-          Results
-        </a>
+        <Button variant="outline" asChild>
+          <a href="/">Logout</a>
+        </Button>
       </div>
     </nav>
   );
