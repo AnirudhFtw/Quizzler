@@ -6,13 +6,13 @@ import { Trophy, Medal, Award } from "lucide-react";
 
 const Leaderboard = () => {
   const leaderboardData = [
-    { rank: 1, name: "Sophia Barnett", score: 95, quizzes: 16, icon: Trophy },
-    { rank: 2, name: "Ethan Carter", score: 93, quizzes: 12, icon: Medal },
-    { rank: 3, name: "Olivia Davis", score: 92, quizzes: 14, icon: Award },
-    { rank: 4, name: "Liam Foster", score: 90, quizzes: 18, icon: null },
-    { rank: 5, name: "Ava Green", score: 88, quizzes: 11, icon: null },
-    { rank: 6, name: "Noah Harris", score: 85, quizzes: 15, icon: null },
-    { rank: 7, name: "Isabella Jones", score: 82, quizzes: 13, icon: null },
+    { rank: 1, name: "Sophie Bennett", score: 98, quizzes: 15, icon: Trophy },
+    { rank: 2, name: "Ethan Carter", score: 95, quizzes: 12, icon: Medal },
+    { rank: 3, name: "Olivia Davis", score: 92, quizzes: 18, icon: Award },
+    { rank: 4, name: "Liam Foster", score: 90, quizzes: 10 },
+    { rank: 5, name: "Ava Green", score: 88, quizzes: 14 },
+    { rank: 6, name: "Noah Harris", score: 85, quizzes: 11 },
+    { rank: 7, name: "Isabella Jones", score: 82, quizzes: 16 },
   ];
 
   const getRankIcon = (rank: number) => {
@@ -47,7 +47,7 @@ const Leaderboard = () => {
                     <thead className="border-b border-slate-700">
                       <tr className="text-left">
                         <th className="px-6 py-4 font-medium text-slate-400">Rank</th>
-                        <th className="px-6 py-4 font-medium text-slate-400">Name</th>
+                        <th className="px-6 py-4 font-medium text-slate-400">User</th>
                         <th className="px-6 py-4 font-medium text-slate-400">Score</th>
                         <th className="px-6 py-4 font-medium text-slate-400">Quizzes Completed</th>
                       </tr>
