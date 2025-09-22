@@ -56,6 +56,8 @@ const Dashboard = () => {
                   window.location.href = '/find-quiz';
                 } else if (card.title === "View Leaderboards") {
                   window.location.href = '/leaderboard';
+                } else if (card.title === "My Profile") {
+                  window.location.href = '/profile';
                 }
               }}
             >
