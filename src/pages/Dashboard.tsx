@@ -54,6 +54,8 @@ const Dashboard = () => {
               onClick={() => {
                 if (card.title === "Take Trivia Quiz") {
                   window.location.href = '/find-quiz';
+                } else if (card.title === "Create a Quiz") {
+                  window.location.href = '/create-quiz';
                 } else if (card.title === "View Leaderboards") {
                   window.location.href = '/leaderboard';
                 } else if (card.title === "My Profile") {
