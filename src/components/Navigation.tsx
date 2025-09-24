@@ -12,20 +12,36 @@ const Navigation = () => {
         : "bg-background/95 border-border/20"
     }`}>
       <div className="flex items-center space-x-2">
-        <div className="w-6 h-6 bg-primary rounded-sm flex items-center justify-center">
-          <div className="w-3 h-3 bg-background rounded-sm"></div>
+        <div className={`w-6 h-6 rounded-sm flex items-center justify-center ${
+          isDarkPage ? "bg-white" : "bg-primary"
+        }`}>
+          <div className={`w-3 h-3 rounded-sm ${
+            isDarkPage ? "bg-slate-900" : "bg-background"
+          }`}></div>
         </div>
-        <span className="text-xl font-semibold text-foreground">Quizzler</span>
+        <span className={`text-xl font-semibold ${
+          isDarkPage ? "text-white" : "text-foreground"
+        }`}>Quizzler</span>
       </div>
       
-      <div className="hidden md:flex items-center space-x-8">
-        <a href="/dashboard" className="text-foreground hover:text-sage transition-colors">
-          Home
-        </a>
-        <a href="/" className="text-foreground hover:text-sage transition-colors">
-          Logout
-        </a>
-      </div>
+      {location.pathname !== "/" && (
+        <div className="hidden md:flex items-center space-x-8">
+          <a href="/dashboard" className={`transition-colors ${
+            isDarkPage 
+              ? "text-white hover:text-green-400" 
+              : "text-foreground hover:text-sage"
+          }`}>
+            Home
+          </a>
+          <a href="/" className={`transition-colors ${
+            isDarkPage 
+              ? "text-white hover:text-green-400" 
+              : "text-foreground hover:text-sage"
+          }`}>
+            Logout
+          </a>
+        </div>
+      )}
     </nav>
   );
 };
