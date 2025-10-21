@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 const Navigation = () => {
   const location = useLocation();
   const isDarkPage = location.pathname === "/leaderboard" || location.pathname === "/profile";
-  const isAuthPage = location.pathname === "/" || location.pathname === "/signup";
+  const isAuthPage = location.pathname === "/" || location.pathname === "/signup" || location.pathname === "/about";
   
   return (
     <nav className={`w-full px-6 py-4 flex items-center justify-between backdrop-blur-sm border-b ${
@@ -28,14 +28,7 @@ const Navigation = () => {
       
       {isAuthPage ? (
         <div className="hidden md:flex items-center space-x-8">
-          <a href="/" className={`transition-colors ${
-            isDarkPage 
-              ? "text-white hover:text-green-400" 
-              : "text-foreground hover:text-sage"
-          }`}>
-            Home
-          </a>
-          <a href="#" className={`transition-colors ${
+          <a href="/about" className={`transition-colors ${
             isDarkPage 
               ? "text-white hover:text-green-400" 
               : "text-foreground hover:text-sage"
