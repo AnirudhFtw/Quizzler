@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import SignUp from "./pages/SignUp";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
 import CreateQuiz from "./pages/CreateQuiz";
 import FindQuiz from "./pages/FindQuiz";
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create-quiz" element={<CreateQuiz />} />
           <Route path="/find-quiz" element={<FindQuiz />} />

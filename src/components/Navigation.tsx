@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const Navigation = () => {
   const location = useLocation();
@@ -29,20 +28,13 @@ const Navigation = () => {
       
       {isAboutPage ? (
         <div className="hidden md:flex items-center space-x-8">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <a href="#" className={`transition-colors ${
-                isDarkPage 
-                  ? "text-white hover:text-green-400" 
-                  : "text-foreground hover:text-sage"
-              }`}>
-                Contact
-              </a>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>anirudh23bcs209@iiitkottayam.ac.in</p>
-            </TooltipContent>
-          </Tooltip>
+          <a href="/contact" className={`transition-colors ${
+            isDarkPage 
+              ? "text-white hover:text-green-400" 
+              : "text-foreground hover:text-sage"
+          }`}>
+            Contact
+          </a>
         </div>
       ) : isAuthPage ? (
         <div className="hidden md:flex items-center space-x-8">
@@ -53,20 +45,13 @@ const Navigation = () => {
           }`}>
             About
           </a>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <a href="#" className={`transition-colors ${
-                isDarkPage 
-                  ? "text-white hover:text-green-400" 
-                  : "text-foreground hover:text-sage"
-              }`}>
-                Contact
-              </a>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>anirudh23bcs209@iiitkottayam.ac.in</p>
-            </TooltipContent>
-          </Tooltip>
+          <a href="/contact" className={`transition-colors ${
+            isDarkPage 
+              ? "text-white hover:text-green-400" 
+              : "text-foreground hover:text-sage"
+          }`}>
+            Contact
+          </a>
         </div>
       ) : (
         <div className="hidden md:flex items-center space-x-8">
