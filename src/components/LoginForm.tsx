@@ -67,12 +67,12 @@ const LoginForm = () => {
         <div className="text-center">
           <p className="text-muted-foreground">
             Don't have an account?{" "}
-            <button
-              type="button"
+            <a
+              href="/signup"
               className="text-sage hover:text-sage/80 font-medium underline transition-colors"
             >
               Sign Up
-            </button>
+            </a>
           </p>
         </div>
       </form>
