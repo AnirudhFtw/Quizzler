@@ -8,6 +8,43 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, X } from "lucide-react";
 
+/**
+ * CreateQuiz Component
+ * 
+ * BACKEND INTEGRATION NEEDED:
+ * 1. Create 'quizzes' table in Supabase:
+ *    - id (uuid, primary key)
+ *    - creator_id (uuid, references profiles.id)
+ *    - title (text, required)
+ *    - description (text)
+ *    - created_at (timestamp)
+ *    - is_public (boolean, default true)
+ * 
+ * 2. Create 'questions' table:
+ *    - id (uuid, primary key)
+ *    - quiz_id (uuid, references quizzes.id, ON DELETE CASCADE)
+ *    - type (text: 'multiple-choice', 'true-false', 'fill-blank')
+ *    - question_text (text, required)
+ *    - options (jsonb array for storing answer options)
+ *    - correct_answer (text or number)
+ *    - order_index (integer, for question ordering)
+ * 
+ * 3. Enable RLS on both tables:
+ *    - Users can create their own quizzes
+ *    - Users can read public quizzes or their own quizzes
+ *    - Users can update/delete only their own quizzes
+ *    - Questions inherit the same permissions as their parent quiz
+ * 
+ * 4. In handleCreateQuiz:
+ *    - First insert into 'quizzes' table
+ *    - Then bulk insert questions with the quiz_id
+ *    - Use Supabase transactions for data integrity
+ *    - Show success toast and redirect to quiz list
+ * 
+ * 5. Add authentication check to ensure user is logged in
+ * 6. Add loading states and error handling
+ */
+
 type QuestionType = "multiple-choice" | "true-false" | "fill-blank";
 
 interface Question {
@@ -19,14 +56,34 @@ interface Question {
 }
 
 const CreateQuiz = () => {
+  // Quiz metadata state
   const [quizTitle, setQuizTitle] = useState("");
   const [quizDescription, setQuizDescription] = useState("");
   const [questions, setQuestions] = useState<Question[]>([]);
+  
+  // Current question being edited
   const [currentQuestion, setCurrentQuestion] = useState<Partial<Question>>({
     type: "multiple-choice",
     question: "",
     options: ["", "", "", ""],
   });
+  
+  // TODO: Add loading and authentication states
+  // const [loading, setLoading] = useState(false);
+  // const [user, setUser] = useState(null);
+  
+  // TODO: Add useEffect to check authentication
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     const { data: { session } } = await supabase.auth.getSession();
+  //     if (!session) {
+  //       window.location.href = '/';
+  //     } else {
+  //       setUser(session.user);
+  //     }
+  //   };
+  //   checkAuth();
+  // }, []);
 
   const handleQuestionTypeChange = (type: QuestionType) => {
     let options: string[] = [];
@@ -86,9 +143,62 @@ const CreateQuiz = () => {
     setQuestions(questions.filter(q => q.id !== id));
   };
 
-  const handleCreateQuiz = () => {
+  /**
+   * Handle quiz creation and save to database
+   * 
+   * BACKEND TODO:
+   * 1. Validate all inputs (title, description, questions)
+   * 2. Insert quiz into 'quizzes' table
+   * 3. Insert all questions with the quiz_id
+   * 4. Handle errors (network, validation, database)
+   * 5. Show success toast notification
+   * 6. Redirect to dashboard or quiz list page
+   */
+  const handleCreateQuiz = async () => {
+    // TODO: Replace with actual database save
+    // setLoading(true);
+    
+    // const { data: quizData, error: quizError } = await supabase
+    //   .from('quizzes')
+    //   .insert({
+    //     title: quizTitle,
+    //     description: quizDescription,
+    //     creator_id: user.id,
+    //     is_public: true,
+    //   })
+    //   .select()
+    //   .single();
+    
+    // if (quizError) {
+    //   console.error('Error creating quiz:', quizError);
+    //   setLoading(false);
+    //   return;
+    // }
+    
+    // // Now insert all questions
+    // const questionsToInsert = questions.map((q, index) => ({
+    //   quiz_id: quizData.id,
+    //   type: q.type,
+    //   question_text: q.question,
+    //   options: q.options,
+    //   correct_answer: q.correctAnswer,
+    //   order_index: index,
+    // }));
+    
+    // const { error: questionsError } = await supabase
+    //   .from('questions')
+    //   .insert(questionsToInsert);
+    
+    // if (questionsError) {
+    //   console.error('Error creating questions:', questionsError);
+    //   setLoading(false);
+    //   return;
+    // }
+    
+    // Success - show toast and redirect
     console.log("Creating quiz:", { quizTitle, quizDescription, questions });
-    // Handle quiz creation logic here
+    // toast.success("Quiz created successfully!");
+    // window.location.href = '/dashboard';
   };
 
   return (

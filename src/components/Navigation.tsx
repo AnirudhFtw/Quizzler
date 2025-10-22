@@ -1,11 +1,60 @@
 import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router-dom";
 
+/**
+ * Navigation Component
+ * 
+ * BACKEND INTEGRATION NEEDED:
+ * 1. Add authentication state management:
+ *    - Track if user is logged in using Supabase session
+ *    - Show/hide navigation items based on auth state
+ * 
+ * 2. Implement proper logout functionality:
+ *    - Call supabase.auth.signOut() on Logout click
+ *    - Clear any cached user data
+ *    - Redirect to login page
+ * 
+ * 3. Add user profile display (optional):
+ *    - Show username/avatar in navigation
+ *    - Dropdown menu for profile, settings, logout
+ * 
+ * Example logout implementation:
+ * 
+ * const handleLogout = async () => {
+ *   const { error } = await supabase.auth.signOut();
+ *   if (!error) {
+ *     window.location.href = '/';
+ *   }
+ * };
+ */
+
 const Navigation = () => {
   const location = useLocation();
   const isDarkPage = location.pathname === "/leaderboard" || location.pathname === "/profile";
   const isAuthPage = location.pathname === "/" || location.pathname === "/signup";
   const isAboutPage = location.pathname === "/about";
+  
+  // TODO: Add authentication state
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [user, setUser] = useState(null);
+  
+  // TODO: Check authentication status on mount
+  // useEffect(() => {
+  //   const checkAuth = async () => {
+  //     const { data: { session } } = await supabase.auth.getSession();
+  //     setIsAuthenticated(!!session);
+  //     setUser(session?.user || null);
+  //   };
+  //   checkAuth();
+  // }, []);
+  
+  // TODO: Implement logout handler
+  // const handleLogout = async () => {
+  //   await supabase.auth.signOut();
+  //   setIsAuthenticated(false);
+  //   setUser(null);
+  //   window.location.href = '/';
+  // };
   
   return (
     <nav className={`w-full px-6 py-4 flex items-center justify-between backdrop-blur-sm border-b ${

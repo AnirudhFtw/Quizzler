@@ -5,7 +5,71 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+/**
+ * Profile Component
+ * 
+ * BACKEND INTEGRATION NEEDED:
+ * 1. Fetch user profile data from 'profiles' table
+ * 2. Fetch recent quiz attempts with JOIN:
+ *    SELECT qa.*, q.title, q.total_questions
+ *    FROM quiz_attempts qa
+ *    JOIN quizzes q ON qa.quiz_id = q.id
+ *    WHERE qa.user_id = current_user
+ *    ORDER BY qa.completed_at DESC
+ *    LIMIT 10
+ * 
+ * 3. Add profile image upload using Supabase Storage:
+ *    - Create 'avatars' bucket
+ *    - Enable RLS: Users can upload/update their own avatar
+ *    - Store avatar URL in profiles table
+ * 
+ * 4. Add edit profile functionality:
+ *    - Allow users to update their profile fields
+ *    - Use supabase.from('profiles').update()
+ *    - Add form validation
+ * 
+ * 5. Add authentication check
+ * 6. Handle loading and error states
+ */
+
 const Profile = () => {
+  // TODO: Add state management
+  // const [profile, setProfile] = useState(null);
+  // const [recentAttempts, setRecentAttempts] = useState([]);
+  // const [loading, setLoading] = useState(true);
+  
+  // TODO: Fetch data from Supabase
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     const { data: { session } } = await supabase.auth.getSession();
+  //     if (!session) {
+  //       window.location.href = '/';
+  //       return;
+  //     }
+  //     
+  //     // Fetch profile and quiz attempts
+  //     const { data: profileData } = await supabase
+  //       .from('profiles')
+  //       .select('*')
+  //       .eq('id', session.user.id)
+  //       .single();
+  //     
+  //     const { data: attempts } = await supabase
+  //       .from('quiz_attempts')
+  //       .select('*, quizzes(title)')
+  //       .eq('user_id', session.user.id)
+  //       .order('completed_at', { ascending: false })
+  //       .limit(10);
+  //     
+  //     setProfile(profileData);
+  //     setRecentAttempts(attempts);
+  //     setLoading(false);
+  //   };
+  //   
+  //   fetchProfile();
+  // }, []);
+  
+  // Hardcoded data for now - TODO: Replace with database data
   const recentAttempts = [
     {
       quiz: "History of Art",
@@ -30,14 +94,18 @@ const Profile = () => {
       
       <main className="container mx-auto px-6 py-8">
         {/* Profile Header */}
+        {/* TODO: Replace with actual user data from profiles table */}
         <div className="flex items-center gap-6 mb-8">
           <Avatar className="w-20 h-20">
+            {/* TODO: Load from profile.avatar_url */}
             <AvatarImage src="/placeholder.svg" alt="Sophia Clark" />
             <AvatarFallback className="text-xl bg-slate-700 text-white">SC</AvatarFallback>
           </Avatar>
           <div>
+            {/* TODO: Use profile.full_name */}
             <h1 className="text-2xl font-bold text-white mb-1">Sophia Clark</h1>
             <p className="text-slate-400 mb-1">Student</p>
+            {/* TODO: Format profile.created_at */}
             <p className="text-slate-500 text-sm">Joined 2023</p>
           </div>
         </div>

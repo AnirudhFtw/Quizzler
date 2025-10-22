@@ -3,15 +3,57 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+/**
+ * LoginForm Component
+ * 
+ * BACKEND INTEGRATION NEEDED:
+ * 1. Import Supabase client: import { supabase } from "@/integrations/supabase/client"
+ * 2. Add state for loading and error handling
+ * 3. Implement signInWithPassword in handleSubmit
+ * 4. Add error toast notifications for failed login attempts
+ * 5. Redirect authenticated users automatically using useEffect + supabase.auth.getSession()
+ */
+
 const LoginForm = () => {
+  // Form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
+  // TODO: Add loading state for better UX
+  // const [loading, setLoading] = useState(false);
+  
+  // TODO: Add error state to display authentication errors
+  // const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  /**
+   * Handle login form submission
+   * 
+   * BACKEND TODO:
+   * 1. Call supabase.auth.signInWithPassword({ email, password })
+   * 2. Handle errors (wrong credentials, network issues, etc.)
+   * 3. On success, redirect to /dashboard
+   * 4. Store session automatically (Supabase handles this)
+   */
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
+    
+    // TODO: Replace with actual Supabase authentication
+    // setLoading(true);
+    // setError(null);
+    
+    // const { data, error } = await supabase.auth.signInWithPassword({
+    //   email,
+    //   password,
+    // });
+    
+    // if (error) {
+    //   setError(error.message);
+    //   setLoading(false);
+    //   return;
+    // }
+    
+    // Success - Supabase automatically stores the session
     console.log("Login attempt:", { email, password });
-    // Redirect to dashboard after login
     window.location.href = '/dashboard';
   };
 
