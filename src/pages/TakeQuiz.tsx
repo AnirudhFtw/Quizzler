@@ -49,11 +49,11 @@ const TakeQuiz = () => {
   const [timeLeft, setTimeLeft] = useState(299); // 4:59 in seconds
   const [showWarning, setShowWarning] = useState(false);
   const [violationCount, setViolationCount] = useState(0);
+  const [userAnswers, setUserAnswers] = useState<Record<number, number>>({});
   
   // TODO: Add these states for backend integration
   // const [quiz, setQuiz] = useState(null);
   // const [questions, setQuestions] = useState([]);
-  // const [userAnswers, setUserAnswers] = useState<Record<string, number>>({});
   // const [loading, setLoading] = useState(true);
   // const [submitting, setSubmitting] = useState(false);
   // const [attemptId, setAttemptId] = useState<string | null>(null);
@@ -188,6 +188,18 @@ const TakeQuiz = () => {
       setCurrentQuestion(currentQuestion - 1);
     }
   };
+
+  const handleOptionClick = (optionIndex: number) => {
+    // Toggle selection: if already selected, deselect it
+    setUserAnswers(prev => {
+      if (prev[currentQuestion] === optionIndex) {
+        const newAnswers = { ...prev };
+        delete newAnswers[currentQuestion];
+        return newAnswers;
+      }
+      return { ...prev, [currentQuestion]: optionIndex };
+    });
+  };
   
   /**
    * Submit quiz and save results to database
@@ -267,18 +279,23 @@ const TakeQuiz = () => {
             </div>
 
             <div className="space-y-3">
-              {/* TODO: Add onClick to save user's answer to userAnswers state */}
-              {/* TODO: Add visual feedback (highlight) for selected answer */}
-              {questions[currentQuestion].options.map((option, index) => (
-                <button
-                  key={index}
-                  className="w-full p-4 text-left border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                  // TODO: onClick={() => setUserAnswers({ ...userAnswers, [questions[currentQuestion].id]: index })}
-                >
-                  <span className="mr-3 text-muted-foreground">{String.fromCharCode(65 + index)}.</span>
-                  {option}
-                </button>
-              ))}
+              {questions[currentQuestion].options.map((option, index) => {
+                const isSelected = userAnswers[currentQuestion] === index;
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleOptionClick(index)}
+                    className={`w-full p-4 text-left border rounded-lg transition-colors ${
+                      isSelected 
+                        ? 'border-primary bg-primary/10 text-foreground' 
+                        : 'border-border hover:bg-muted/50'
+                    }`}
+                  >
+                    <span className="mr-3 text-muted-foreground">{String.fromCharCode(65 + index)}.</span>
+                    {option}
+                  </button>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
