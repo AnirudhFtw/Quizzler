@@ -1,60 +1,43 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-/**
- * LoginForm Component
- * 
- * BACKEND INTEGRATION NEEDED:
- * 1. Import Supabase client: import { supabase } from "@/integrations/supabase/client"
- * 2. Add state for loading and error handling
- * 3. Implement signInWithPassword in handleSubmit
- * 4. Add error toast notifications for failed login attempts
- * 5. Redirect authenticated users automatically using useEffect + supabase.auth.getSession()
- */
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+  const { signIn } = useAuth();
+  
   // Form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
-  // TODO: Add loading state for better UX
-  // const [loading, setLoading] = useState(false);
-  
-  // TODO: Add error state to display authentication errors
-  // const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  /**
-   * Handle login form submission
-   * 
-   * BACKEND TODO:
-   * 1. Call supabase.auth.signInWithPassword({ email, password })
-   * 2. Handle errors (wrong credentials, network issues, etc.)
-   * 3. On success, redirect to /dashboard
-   * 4. Store session automatically (Supabase handles this)
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // TODO: Replace with actual Supabase authentication
-    // setLoading(true);
-    // setError(null);
+    if (!email || !password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
     
-    // const { data, error } = await supabase.auth.signInWithPassword({
-    //   email,
-    //   password,
-    // });
+    setLoading(true);
     
-    // if (error) {
-    //   setError(error.message);
-    //   setLoading(false);
-    //   return;
-    // }
-    
-    // Success - Supabase automatically stores the session
-    console.log("Login attempt:", { email, password });
-    window.location.href = '/dashboard';
+    try {
+      await signIn(email, password);
+      toast.success("Successfully logged in!");
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Sign in error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to sign in";
+      toast.error(errorMessage, {
+        duration: 5000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -102,8 +85,9 @@ const LoginForm = () => {
         <Button
           type="submit"
           className="w-full h-12 bg-sage hover:bg-sage/90 text-white font-medium transition-colors"
+          disabled={loading}
         >
-          Sign In
+          {loading ? "Signing In..." : "Sign In"}
         </Button>
 
         <div className="text-center">

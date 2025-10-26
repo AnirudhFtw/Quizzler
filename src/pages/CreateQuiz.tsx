@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,136 +7,98 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, X } from "lucide-react";
-
-/**
- * CreateQuiz Component
- * 
- * BACKEND INTEGRATION NEEDED:
- * 1. Create 'quizzes' table in Supabase:
- *    - id (uuid, primary key)
- *    - creator_id (uuid, references profiles.id)
- *    - title (text, required)
- *    - description (text)
- *    - created_at (timestamp)
- *    - is_public (boolean, default true)
- * 
- * 2. Create 'questions' table:
- *    - id (uuid, primary key)
- *    - quiz_id (uuid, references quizzes.id, ON DELETE CASCADE)
- *    - type (text: 'multiple-choice', 'true-false', 'fill-blank')
- *    - question_text (text, required)
- *    - options (jsonb array for storing answer options)
- *    - correct_answer (text or number)
- *    - order_index (integer, for question ordering)
- * 
- * 3. Enable RLS on both tables:
- *    - Users can create their own quizzes
- *    - Users can read public quizzes or their own quizzes
- *    - Users can update/delete only their own quizzes
- *    - Questions inherit the same permissions as their parent quiz
- * 
- * 4. In handleCreateQuiz:
- *    - First insert into 'quizzes' table
- *    - Then bulk insert questions with the quiz_id
- *    - Use Supabase transactions for data integrity
- *    - Show success toast and redirect to quiz list
- * 
- * 5. Add authentication check to ensure user is logged in
- * 6. Add loading states and error handling
- */
-
-type QuestionType = "multiple-choice" | "true-false" | "fill-blank";
+import { quizApi } from "@/lib/api-client";
+import { toast } from "sonner";
+import type { QuestionCreate } from "@/lib/api-types";
 
 interface Question {
   id: string;
-  type: QuestionType;
-  question: string;
-  options: string[];
-  correctAnswer: number | string;
+  question_text: string;
+  option_a: string;
+  option_b: string;
+  option_c: string;
+  option_d: string;
+  correct_option: 'a' | 'b' | 'c' | 'd';
+  mark?: number;
 }
 
 const CreateQuiz = () => {
+  const navigate = useNavigate();
+  
   // Quiz metadata state
   const [quizTitle, setQuizTitle] = useState("");
   const [quizDescription, setQuizDescription] = useState("");
+  const [isTrivia, setIsTrivia] = useState(false);
+  const [topic, setTopic] = useState("");
+  const [difficulty, setDifficulty] = useState("");
+  const [duration, setDuration] = useState(60);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(false);
+  
+  // Private quiz scheduling
+  const [startTime, setStartTime] = useState("");
+  
+  // Marking system
+  const [positiveMark, setPositiveMark] = useState(1);
+  const [negativeMark, setNegativeMark] = useState(0);
+  
+  // Quiz behavior settings
+  const [navigationType, setNavigationType] = useState<"omni" | "restricted">("omni");
+  const [tabSwitchExit, setTabSwitchExit] = useState(true);
   
   // Current question being edited
-  const [currentQuestion, setCurrentQuestion] = useState<Partial<Question>>({
-    type: "multiple-choice",
-    question: "",
-    options: ["", "", "", ""],
+  const [currentQuestion, setCurrentQuestion] = useState<Question>({
+    id: "",
+    question_text: "",
+    option_a: "",
+    option_b: "",
+    option_c: "",
+    option_d: "",
+    correct_option: 'a',
+    mark: 1
   });
-  
-  // TODO: Add loading and authentication states
-  // const [loading, setLoading] = useState(false);
-  // const [user, setUser] = useState(null);
-  
-  // TODO: Add useEffect to check authentication
-  // useEffect(() => {
-  //   const checkAuth = async () => {
-  //     const { data: { session } } = await supabase.auth.getSession();
-  //     if (!session) {
-  //       window.location.href = '/';
-  //     } else {
-  //       setUser(session.user);
-  //     }
-  //   };
-  //   checkAuth();
-  // }, []);
 
-  const handleQuestionTypeChange = (type: QuestionType) => {
-    let options: string[] = [];
-    
-    if (type === "multiple-choice") {
-      options = ["", "", "", ""];
-    } else if (type === "true-false") {
-      options = ["True", "False"];
-    } else if (type === "fill-blank") {
-      options = [""];
-    }
-    
+  // Update current question mark when positive mark changes
+  useEffect(() => {
+    setCurrentQuestion(prev => ({ ...prev, mark: positiveMark }));
+  }, [positiveMark]);
+
+  const handleOptionChange = (option: 'a' | 'b' | 'c' | 'd', value: string) => {
     setCurrentQuestion({
       ...currentQuestion,
-      type,
-      options,
-    });
-  };
-
-  const handleOptionChange = (index: number, value: string) => {
-    const newOptions = [...(currentQuestion.options || [])];
-    newOptions[index] = value;
-    setCurrentQuestion({
-      ...currentQuestion,
-      options: newOptions,
-    });
+      [`option_${option}`]: value,
+    } as Question);
   };
 
   const addQuestion = () => {
-    if (!currentQuestion.question || !currentQuestion.type) return;
+    if (!currentQuestion.question_text || 
+        !currentQuestion.option_a || 
+        !currentQuestion.option_b || 
+        !currentQuestion.option_c || 
+        !currentQuestion.option_d) {
+      toast.error("Please fill in all question fields");
+      return;
+    }
     
     const newQuestion: Question = {
+      ...currentQuestion,
       id: Date.now().toString(),
-      type: currentQuestion.type,
-      question: currentQuestion.question,
-      options: currentQuestion.options || [],
-      correctAnswer: 0,
     };
     
     setQuestions([...questions, newQuestion]);
     
     // Reset current question
-    const defaultOptions = currentQuestion.type === "multiple-choice" 
-      ? ["", "", "", ""] 
-      : currentQuestion.type === "true-false" 
-        ? ["True", "False"] 
-        : [""];
-    
     setCurrentQuestion({
-      type: currentQuestion.type,
-      question: "",
-      options: defaultOptions,
+      id: "",
+      question_text: "",
+      option_a: "",
+      option_b: "",
+      option_c: "",
+      option_d: "",
+      correct_option: 'a',
+      mark: positiveMark
     });
   };
 
@@ -143,62 +106,63 @@ const CreateQuiz = () => {
     setQuestions(questions.filter(q => q.id !== id));
   };
 
-  /**
-   * Handle quiz creation and save to database
-   * 
-   * BACKEND TODO:
-   * 1. Validate all inputs (title, description, questions)
-   * 2. Insert quiz into 'quizzes' table
-   * 3. Insert all questions with the quiz_id
-   * 4. Handle errors (network, validation, database)
-   * 5. Show success toast notification
-   * 6. Redirect to dashboard or quiz list page
-   */
   const handleCreateQuiz = async () => {
-    // TODO: Replace with actual database save
-    // setLoading(true);
+    if (!quizTitle || questions.length === 0) {
+      toast.error("Please provide a title and at least one question");
+      return;
+    }
+
+    // Validate scheduling for private quizzes
+    if (!isTrivia && startTime) {
+      const start = new Date(startTime);
+      const now = new Date();
+      
+      if (start <= now) {
+        toast.error("Start time must be in the future");
+        return;
+      }
+    }
     
-    // const { data: quizData, error: quizError } = await supabase
-    //   .from('quizzes')
-    //   .insert({
-    //     title: quizTitle,
-    //     description: quizDescription,
-    //     creator_id: user.id,
-    //     is_public: true,
-    //   })
-    //   .select()
-    //   .single();
+    setLoading(true);
     
-    // if (quizError) {
-    //   console.error('Error creating quiz:', quizError);
-    //   setLoading(false);
-    //   return;
-    // }
-    
-    // // Now insert all questions
-    // const questionsToInsert = questions.map((q, index) => ({
-    //   quiz_id: quizData.id,
-    //   type: q.type,
-    //   question_text: q.question,
-    //   options: q.options,
-    //   correct_answer: q.correctAnswer,
-    //   order_index: index,
-    // }));
-    
-    // const { error: questionsError } = await supabase
-    //   .from('questions')
-    //   .insert(questionsToInsert);
-    
-    // if (questionsError) {
-    //   console.error('Error creating questions:', questionsError);
-    //   setLoading(false);
-    //   return;
-    // }
-    
-    // Success - show toast and redirect
-    console.log("Creating quiz:", { quizTitle, quizDescription, questions });
-    // toast.success("Quiz created successfully!");
-    // window.location.href = '/dashboard';
+    try {
+      const questionsData = questions.map(q => ({
+        question_text: q.question_text,
+        option_a: q.option_a,
+        option_b: q.option_b,
+        option_c: q.option_c,
+        option_d: q.option_d,
+        correct_option: q.correct_option,
+        mark: q.mark
+      }));
+      
+      const quizData = {
+        title: quizTitle,
+        description: quizDescription,
+        is_trivia: isTrivia,
+        topic: topic || undefined,
+        difficulty: difficulty || undefined,
+        duration,
+        start_time: startTime || undefined,
+        positive_mark: positiveMark,
+        negative_mark: negativeMark,
+        navigation_type: navigationType,
+        tab_switch_exit: tabSwitchExit,
+        questions: questionsData
+      };
+      
+      const result = await quizApi.create(quizData);
+      toast.success("Quiz created successfully!");
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Failed to create quiz:", error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to create quiz";
+      toast.error(errorMessage, {
+        duration: 5000, // Show error for 5 seconds
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -238,6 +202,153 @@ const CreateQuiz = () => {
                 className="min-h-[100px]"
               />
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="is-trivia" 
+                  checked={isTrivia}
+                  onCheckedChange={(checked) => setIsTrivia(checked as boolean)}
+                />
+                <Label htmlFor="is-trivia">Make this a trivia quiz</Label>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="duration">Duration (minutes)</Label>
+                <Input
+                  id="duration"
+                  type="number"
+                  min="1"
+                  max="180"
+                  value={duration}
+                  onChange={(e) => setDuration(parseInt(e.target.value) || 60)}
+                />
+              </div>
+            </div>
+
+            {isTrivia && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="topic">Topic (Optional)</Label>
+                  <Input
+                    id="topic"
+                    placeholder="e.g., Geography, Science"
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="difficulty">Difficulty</Label>
+                  <Select value={difficulty} onValueChange={setDifficulty}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select difficulty" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="easy">Easy</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="hard">Hard</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Quiz Configuration - Marking & Behavior */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Quiz Configuration</CardTitle>
+            <p className="text-muted-foreground">Configure marking system and quiz behavior</p>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            {/* Marking System */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Marking System</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="positive-mark">Positive Marks (per correct answer)</Label>
+                  <Input
+                    id="positive-mark"
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={positiveMark}
+                    onChange={(e) => setPositiveMark(parseInt(e.target.value) || 1)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="negative-mark">Negative Marks (per wrong answer)</Label>
+                  <Input
+                    id="negative-mark"
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="1"
+                    value={negativeMark}
+                    onChange={(e) => setNegativeMark(parseInt(e.target.value) || 0)}
+                  />
+                  <p className="text-xs text-muted-foreground">Set to 0 for no negative marking</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Quiz Behavior */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Quiz Behavior</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="navigation-type">Navigation Type</Label>
+                  <Select value={navigationType} onValueChange={(value: "omni" | "restricted") => setNavigationType(value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="omni">Omni - Can navigate freely between questions</SelectItem>
+                      <SelectItem value="restricted">Restricted - Sequential navigation only</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center space-x-2 pt-6">
+                  <Checkbox 
+                    id="tab-switch-exit" 
+                    checked={tabSwitchExit}
+                    onCheckedChange={(checked) => setTabSwitchExit(checked as boolean)}
+                  />
+                  <Label htmlFor="tab-switch-exit">Exit quiz if user switches tabs</Label>
+                </div>
+              </div>
+            </div>
+
+            {/* Private Quiz Scheduling */}
+            {!isTrivia && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Quiz Scheduling (Optional)</h3>
+                <p className="text-sm text-muted-foreground">Leave blank for immediate availability</p>
+                <div className="space-y-2">
+                  <Label htmlFor="start-time">Start Time</Label>
+                  <Input
+                    id="start-time"
+                    type="datetime-local"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    End time will be automatically calculated as start time + {duration} minutes
+                  </p>
+                </div>
+                {startTime && (
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <p className="text-sm text-muted-foreground">
+                      <strong>Quiz Schedule:</strong><br/>
+                      Start: {new Date(startTime).toLocaleString()}<br/>
+                      End: {new Date(new Date(startTime).getTime() + duration * 60000).toLocaleString()}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -248,89 +359,100 @@ const CreateQuiz = () => {
             <p className="text-muted-foreground">Build your quiz one question at a time</p>
           </CardHeader>
           <CardContent className="p-6 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label>Question Type</Label>
-                <Select 
-                  value={currentQuestion.type} 
-                  onValueChange={(value: QuestionType) => handleQuestionTypeChange(value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
-                    <SelectItem value="true-false">True or False</SelectItem>
-                    <SelectItem value="fill-blank">Fill in the Blanks</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
+            <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="question-text">Question</Label>
                 <Input
                   id="question-text"
                   placeholder="What is the capital of France?"
-                  value={currentQuestion.question}
+                  value={currentQuestion.question_text}
                   onChange={(e) => setCurrentQuestion({
                     ...currentQuestion,
-                    question: e.target.value
+                    question_text: e.target.value
                   })}
                 />
               </div>
-            </div>
 
-            {/* Options based on question type */}
-            <div className="space-y-4">
-              <Label>Options</Label>
-              {currentQuestion.type === "multiple-choice" && (
-                <div className="space-y-3">
-                  {currentQuestion.options?.map((option, index) => (
-                    <div key={index} className="flex items-center space-x-3">
-                      <div className="w-6 h-6 rounded-full border-2 border-muted-foreground/30 flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-muted-foreground/30"></div>
-                      </div>
-                      <Input
-                        placeholder={`Option ${index + 1} e.g., Paris`}
-                        value={option}
-                        onChange={(e) => handleOptionChange(index, e.target.value)}
-                        className="flex-1"
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {currentQuestion.type === "true-false" && (
-                <div className="space-y-3">
-                  {currentQuestion.options?.map((option, index) => (
-                    <div key={index} className="flex items-center space-x-3">
-                      <div className="w-6 h-6 rounded-full border-2 border-muted-foreground/30 flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-muted-foreground/30"></div>
-                      </div>
-                      <div className="flex-1 p-3 border rounded-md bg-muted/20">
-                        {option}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {currentQuestion.type === "fill-blank" && (
-                <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="option-a">Option A</Label>
                   <Input
-                    placeholder="Correct answer"
-                    value={currentQuestion.options?.[0] || ""}
-                    onChange={(e) => handleOptionChange(0, e.target.value)}
+                    id="option-a"
+                    placeholder="e.g., Paris"
+                    value={currentQuestion.option_a}
+                    onChange={(e) => handleOptionChange('a', e.target.value)}
                   />
                 </div>
-              )}
+                <div className="space-y-2">
+                  <Label htmlFor="option-b">Option B</Label>
+                  <Input
+                    id="option-b"
+                    placeholder="e.g., London"
+                    value={currentQuestion.option_b}
+                    onChange={(e) => handleOptionChange('b', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="option-c">Option C</Label>
+                  <Input
+                    id="option-c"
+                    placeholder="e.g., Berlin"
+                    value={currentQuestion.option_c}
+                    onChange={(e) => handleOptionChange('c', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="option-d">Option D</Label>
+                  <Input
+                    id="option-d"
+                    placeholder="e.g., Madrid"
+                    value={currentQuestion.option_d}
+                    onChange={(e) => handleOptionChange('d', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Correct Answer</Label>
+                  <Select 
+                    value={currentQuestion.correct_option} 
+                    onValueChange={(value: 'a' | 'b' | 'c' | 'd') => 
+                      setCurrentQuestion({...currentQuestion, correct_option: value})
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="a">Option A</SelectItem>
+                      <SelectItem value="b">Option B</SelectItem>
+                      <SelectItem value="c">Option C</SelectItem>
+                      <SelectItem value="d">Option D</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="marks">Marks</Label>
+                  <Input
+                    id="marks"
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={currentQuestion.mark}
+                    onChange={(e) => setCurrentQuestion({
+                      ...currentQuestion,
+                      mark: parseInt(e.target.value) || 1
+                    })}
+                  />
+                </div>
+              </div>
             </div>
 
             <Button 
               onClick={addQuestion}
               className="w-full bg-primary hover:bg-primary/90"
-              disabled={!currentQuestion.question}
+              disabled={!currentQuestion.question_text}
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Question
@@ -358,10 +480,15 @@ const CreateQuiz = () => {
                       <X className="w-4 h-4" />
                     </Button>
                   </div>
-                  <p className="text-muted-foreground">{question.question}</p>
-                  <div className="text-sm text-muted-foreground">
-                    Type: {question.type === "multiple-choice" ? "Multiple Choice" : 
-                           question.type === "true-false" ? "True or False" : "Fill in the Blanks"}
+                  <p className="text-muted-foreground">{question.question_text}</p>
+                  <div className="text-sm text-muted-foreground grid grid-cols-2 gap-2 mt-2">
+                    <div>A: {question.option_a}</div>
+                    <div>B: {question.option_b}</div>
+                    <div>C: {question.option_c}</div>
+                    <div>D: {question.option_d}</div>
+                  </div>
+                  <div className="text-sm font-medium text-green-600">
+                    Correct: Option {question.correct_option.toUpperCase()} • {question.mark} mark(s)
                   </div>
                 </div>
               ))}
@@ -375,9 +502,9 @@ const CreateQuiz = () => {
             onClick={handleCreateQuiz}
             size="lg"
             className="bg-primary hover:bg-primary/90 px-8"
-            disabled={!quizTitle || questions.length === 0}
+            disabled={!quizTitle || questions.length === 0 || loading}
           >
-            Create Quiz
+            {loading ? "Creating Quiz..." : "Create Quiz"}
           </Button>
         </div>
       </main>

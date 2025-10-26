@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,114 +11,57 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-/**
- * TakeQuiz Component
- * 
- * BACKEND INTEGRATION NEEDED:
- * 1. Fetch quiz data from database using quiz ID from URL params:
- *    - Get quiz metadata from 'quizzes' table
- *    - Get all questions from 'questions' table
- *    - Use JOIN or separate queries
- * 
- * 2. Create 'quiz_attempts' table to store results:
- *    - id (uuid, primary key)
- *    - user_id (uuid, references profiles.id)
- *    - quiz_id (uuid, references quizzes.id)
- *    - score (numeric)
- *    - answers (jsonb - stores user's answers)
- *    - time_taken (integer - seconds)
- *    - violations_count (integer)
- *    - completed_at (timestamp)
- * 
- * 3. Create 'quiz_violations' table to log cheating attempts:
- *    - id (uuid, primary key)
- *    - attempt_id (uuid, references quiz_attempts.id)
- *    - violation_type (text: 'tab_switch', 'window_blur')
- *    - timestamp (timestamp)
- * 
- * 4. Track user's selected answers in state
- * 5. Auto-submit when timer reaches 0
- * 6. Calculate score and save to database on submit
- * 7. Add authentication check
- * 8. Handle loading states
- */
+import { sessionApi, quizApi } from "@/lib/api-client";
+import { toast } from "sonner";
+import type { StartQuizResponse, Question } from "@/lib/api-types";
 
 const TakeQuiz = () => {
+  const navigate = useNavigate();
+  const { quizId } = useParams();
+  
   // Quiz state
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(299); // 4:59 in seconds
+  const [timeLeft, setTimeLeft] = useState(0);
   const [showWarning, setShowWarning] = useState(false);
   const [violationCount, setViolationCount] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<Record<number, number>>({});
+  const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
+  const [quiz, setQuiz] = useState<StartQuizResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   
-  // TODO: Add these states for backend integration
-  // const [quiz, setQuiz] = useState(null);
-  // const [questions, setQuestions] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  // const [submitting, setSubmitting] = useState(false);
-  // const [attemptId, setAttemptId] = useState<string | null>(null);
-  
-  // TODO: Fetch quiz data on mount
-  // useEffect(() => {
-  //   const fetchQuiz = async () => {
-  //     const params = new URLSearchParams(window.location.search);
-  //     const quizId = params.get('id');
-  //     
-  //     const { data: quizData, error } = await supabase
-  //       .from('quizzes')
-  //       .select('*, questions(*)')
-  //       .eq('id', quizId)
-  //       .single();
-  //     
-  //     if (error) {
-  //       console.error('Error fetching quiz:', error);
-  //       return;
-  //     }
-  //     
-  //     setQuiz(quizData);
-  //     setQuestions(quizData.questions.sort((a, b) => a.order_index - b.order_index));
-  //     setLoading(false);
-  //     
-  //     // Create a new quiz attempt record
-  //     const { data: attempt } = await supabase
-  //       .from('quiz_attempts')
-  //       .insert({
-  //         user_id: user.id,
-  //         quiz_id: quizId,
-  //         score: 0, // Will be updated on submit
-  //       })
-  //       .select()
-  //       .single();
-  //     
-  //     setAttemptId(attempt.id);
-  //   };
-  //   
-  //   fetchQuiz();
-  // }, []);
+  // Fetch quiz data and start session
+  useEffect(() => {
+    const startQuiz = async () => {
+      if (!quizId) {
+        toast.error("No quiz ID provided");
+        navigate('/find-quiz');
+        return;
+      }
 
-  // Hardcoded questions for now - TODO: Replace with database data
-  const questions = [
-    {
-      question: "What is the capital of France?",
-      options: ["London", "Berlin", "Paris", "Madrid"],
-      correct: 2
-    },
-    {
-      question: "Which planet is known as the Red Planet?",
-      options: ["Venus", "Mars", "Jupiter", "Saturn"],
-      correct: 1
-    }
-  ];
+      try {
+        const sessionData = await sessionApi.start(quizId);
+        setQuiz(sessionData);
+        setTimeLeft(sessionData.quiz.duration * 60); // Convert minutes to seconds
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to start quiz:', error);
+        toast.error(error instanceof Error ? error.message : "Failed to start quiz");
+        navigate('/find-quiz');
+      }
+    };
+
+    startQuiz();
+  }, [quizId, navigate]);
 
   // Timer logic - countdown every second
   useEffect(() => {
+    if (timeLeft <= 0) return;
+    
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
-        if (prev <= 0) {
+        if (prev <= 1) {
           clearInterval(timer);
-          // TODO: Auto-submit quiz when time runs out
-          // handleSubmitQuiz();
+          handleSubmitQuiz(); // Auto-submit when time runs out
           return 0;
         }
         return prev - 1;
@@ -125,39 +69,22 @@ const TakeQuiz = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [timeLeft]);
 
   // Tab switching detection - prevents cheating
-  // TODO: Log these violations to 'quiz_violations' table
   useEffect(() => {
+    if (!quiz?.quiz.tab_switch_exit) return;
+
     const handleVisibilityChange = () => {
       if (document.hidden) {
         setViolationCount(prev => prev + 1);
         setShowWarning(true);
-        
-        // TODO: Log violation to database
-        // if (attemptId) {
-        //   await supabase.from('quiz_violations').insert({
-        //     attempt_id: attemptId,
-        //     violation_type: 'tab_switch',
-        //     timestamp: new Date().toISOString(),
-        //   });
-        // }
       }
     };
 
     const handleBlur = () => {
       setViolationCount(prev => prev + 1);
       setShowWarning(true);
-      
-      // TODO: Log violation to database
-      // if (attemptId) {
-      //   await supabase.from('quiz_violations').insert({
-      //     attempt_id: attemptId,
-      //     violation_type: 'window_blur',
-      //     timestamp: new Date().toISOString(),
-      //   });
-      // }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -167,7 +94,7 @@ const TakeQuiz = () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("blur", handleBlur);
     };
-  }, []); // TODO: Add attemptId to dependencies
+  }, [quiz]);
 
   // Format time as MM:SS
   const formatTime = (seconds: number) => {
@@ -177,10 +104,9 @@ const TakeQuiz = () => {
   };
 
   const handleNext = () => {
-    if (currentQuestion < questions.length - 1) {
+    if (quiz && currentQuestion < quiz.questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     }
-    // Last question handled by button onClick below
   };
 
   const handlePrevious = () => {
@@ -189,70 +115,61 @@ const TakeQuiz = () => {
     }
   };
 
-  const handleOptionClick = (optionIndex: number) => {
-    // Toggle selection: if already selected, deselect it
+  const handleOptionClick = (option: 'a' | 'b' | 'c' | 'd') => {
+    if (!quiz) return;
+    
+    const questionId = quiz.questions[currentQuestion].id;
     setUserAnswers(prev => {
-      if (prev[currentQuestion] === optionIndex) {
+      if (prev[questionId] === option) {
         const newAnswers = { ...prev };
-        delete newAnswers[currentQuestion];
+        delete newAnswers[questionId];
         return newAnswers;
       }
-      return { ...prev, [currentQuestion]: optionIndex };
+      return { ...prev, [questionId]: option };
     });
   };
-  
-  /**
-   * Submit quiz and save results to database
-   * 
-   * BACKEND TODO:
-   * 1. Calculate final score by comparing userAnswers with correct answers
-   * 2. Update 'quiz_attempts' record with:
-   *    - Final score
-   *    - User's answers (jsonb)
-   *    - Time taken (initial_time - timeLeft)
-   *    - Violations count
-   *    - completed_at timestamp
-   * 3. Show success toast notification
-   * 4. Redirect to results page with attempt_id
-   * 5. Handle errors gracefully
-   */
-  // const handleSubmitQuiz = async () => {
-  //   setSubmitting(true);
-  //   
-  //   // Calculate score
-  //   let correctCount = 0;
-  //   questions.forEach((question, index) => {
-  //     if (userAnswers[question.id] === question.correct_answer) {
-  //       correctCount++;
-  //     }
-  //   });
-  //   
-  //   const finalScore = (correctCount / questions.length) * 100;
-  //   const timeTaken = 299 - timeLeft; // seconds
-  //   
-  //   // Update quiz attempt in database
-  //   const { error } = await supabase
-  //     .from('quiz_attempts')
-  //     .update({
-  //       score: finalScore,
-  //       answers: userAnswers,
-  //       time_taken: timeTaken,
-  //       violations_count: violationCount,
-  //       completed_at: new Date().toISOString(),
-  //     })
-  //     .eq('id', attemptId);
-  //   
-  //   if (error) {
-  //     console.error('Error saving quiz results:', error);
-  //     toast.error('Failed to save quiz results');
-  //     setSubmitting(false);
-  //     return;
-  //   }
-  //   
-  //   // Success - redirect to results
-  //   toast.success('Quiz submitted successfully!');
-  //   window.location.href = `/quiz-results?id=${attemptId}`;
-  // };
+
+  const handleSubmitQuiz = async () => {
+    if (!quiz || !quizId) return;
+    
+    setSubmitting(true);
+    
+    try {
+      const result = await sessionApi.submit(quizId, { answers: userAnswers });
+      toast.success("Quiz submitted successfully!");
+      navigate(`/quiz-results/${quizId}`);
+    } catch (error) {
+      console.error("Failed to submit quiz:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to submit quiz");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!quiz) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="text-center py-20">
+          <h1 className="text-2xl font-bold mb-4">Quiz not found</h1>
+          <Button onClick={() => navigate('/find-quiz')}>
+            Back to Find Quiz
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -271,28 +188,34 @@ const TakeQuiz = () => {
           <CardContent className="p-8">
             <div className="mb-6">
               <div className="text-sm text-muted-foreground mb-4">
-                Question {currentQuestion + 1} of {questions.length}
+                Question {currentQuestion + 1} of {quiz.questions.length}
               </div>
               <h2 className="text-xl font-semibold text-foreground mb-6">
-                {questions[currentQuestion].question}
+                {quiz.questions[currentQuestion].question_text}
               </h2>
             </div>
 
             <div className="space-y-3">
-              {questions[currentQuestion].options.map((option, index) => {
-                const isSelected = userAnswers[currentQuestion] === index;
+              {[
+                { key: 'a', text: quiz.questions[currentQuestion].option_a },
+                { key: 'b', text: quiz.questions[currentQuestion].option_b },
+                { key: 'c', text: quiz.questions[currentQuestion].option_c },
+                { key: 'd', text: quiz.questions[currentQuestion].option_d },
+              ].map((option) => {
+                const questionId = quiz.questions[currentQuestion].id;
+                const isSelected = userAnswers[questionId] === option.key;
                 return (
                   <button
-                    key={index}
-                    onClick={() => handleOptionClick(index)}
+                    key={option.key}
+                    onClick={() => handleOptionClick(option.key as 'a' | 'b' | 'c' | 'd')}
                     className={`w-full p-4 text-left border rounded-lg transition-colors ${
                       isSelected 
                         ? 'border-primary bg-primary/10 text-foreground' 
                         : 'border-border hover:bg-muted/50'
                     }`}
                   >
-                    <span className="mr-3 text-muted-foreground">{String.fromCharCode(65 + index)}.</span>
-                    {option}
+                    <span className="mr-3 text-muted-foreground">{option.key.toUpperCase()}.</span>
+                    {option.text}
                   </button>
                 );
               })}
@@ -310,11 +233,12 @@ const TakeQuiz = () => {
             Previous
           </Button>
           <Button 
-            // TODO: Replace with handleSubmitQuiz() call
-            onClick={currentQuestion === questions.length - 1 ? () => window.location.href = '/quiz-results' : handleNext}
+            onClick={currentQuestion === quiz.questions.length - 1 ? handleSubmitQuiz : handleNext}
             className="bg-soft-green hover:bg-soft-green/90"
+            disabled={submitting}
           >
-            {currentQuestion === questions.length - 1 ? 'Finish Attempt' : 'Next'}
+            {submitting ? 'Submitting...' : 
+             currentQuestion === quiz.questions.length - 1 ? 'Finish Attempt' : 'Next'}
           </Button>
         </div>
       </main>

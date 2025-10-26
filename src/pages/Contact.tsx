@@ -25,7 +25,7 @@ const Contact = () => {
               </div>
               <h3 className="text-lg font-semibold text-foreground">Email</h3>
               <p className="text-muted-foreground text-sm break-all">
-                anirudh23bcs209@iiitkottayam.ac.in
+                support@quizzler.com
               </p>
             </div>
 
@@ -35,7 +35,7 @@ const Contact = () => {
               </div>
               <h3 className="text-lg font-semibold text-foreground">Phone</h3>
               <p className="text-muted-foreground">
-                +91 8097694903
+                +91 6767123456
               </p>
             </div>
 
@@ -45,7 +45,7 @@ const Contact = () => {
               </div>
               <h3 className="text-lg font-semibold text-foreground">Instagram</h3>
               <p className="text-muted-foreground">
-                _ani1rud_
+                Quizzler_Official
               </p>
             </div>
 
@@ -98,7 +98,7 @@ const Contact = () => {
           </div>
 
           <p className="text-center text-muted-foreground text-sm">
-            © 2023 Quizzler. All rights reserved.
+            © 2025 Quizzler. All rights reserved.
           </p>
         </footer>
       </main>

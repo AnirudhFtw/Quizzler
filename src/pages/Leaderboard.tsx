@@ -1,19 +1,34 @@
+import { useEffect, useState } from "react";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { Trophy, Medal, Award } from "lucide-react";
+import { resultsApi } from "@/lib/api-client";
+import { toast } from "sonner";
+import type { GlobalLeaderboardEntry } from "@/lib/api-types";
 
 const Leaderboard = () => {
-  const leaderboardData = [
-    { rank: 1, name: "Sophie Bennett", score: 98, quizzes: 15, icon: Trophy },
-    { rank: 2, name: "Ethan Carter", score: 95, quizzes: 12, icon: Medal },
-    { rank: 3, name: "Olivia Davis", score: 92, quizzes: 18, icon: Award },
-    { rank: 4, name: "Liam Foster", score: 90, quizzes: 10 },
-    { rank: 5, name: "Ava Green", score: 88, quizzes: 14 },
-    { rank: 6, name: "Noah Harris", score: 85, quizzes: 11 },
-    { rank: 7, name: "Isabella Jones", score: 82, quizzes: 16 },
-  ];
+  const [leaderboardData, setLeaderboardData] = useState<GlobalLeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const result = await resultsApi.getGlobalLeaderboard(50);
+        if ('leaderboard' in result && Array.isArray(result.leaderboard)) {
+          setLeaderboardData(result.leaderboard as GlobalLeaderboardEntry[]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch leaderboard:", error);
+        toast.error("Failed to load leaderboard");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Trophy className="w-5 h-5 text-yellow-500" />;
@@ -28,70 +43,68 @@ const Leaderboard = () => {
       
       <main className="container mx-auto px-6 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Leaderboard</h1>
-          <p className="text-slate-400">See how you stack up against other quizzlers</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Global Leaderboard</h1>
+          <p className="text-slate-400">Top performers in trivia quizzes worldwide</p>
         </div>
 
-        <Tabs defaultValue="global" className="max-w-4xl mx-auto">
-          <TabsList className="grid w-full grid-cols-3 mb-8 bg-slate-800 border-slate-700">
-            <TabsTrigger value="global" className="data-[state=active]:bg-green-600 data-[state=active]:text-white text-slate-300">Global</TabsTrigger>
-            <TabsTrigger value="national" className="data-[state=active]:bg-green-600 data-[state=active]:text-white text-slate-300">National</TabsTrigger>
-            <TabsTrigger value="regional" className="data-[state=active]:bg-green-600 data-[state=active]:text-white text-slate-300">Regional</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="global">
-            <Card className="bg-slate-800 border-slate-700">
-              <CardContent className="p-0">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-white mb-4 text-center">Global Trivia Leaderboard</h2>
+          </div>
+          
+          <Card className="bg-slate-800 border-slate-700">
+            <CardContent className="p-0">
+              {loading ? (
+                <div className="flex justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+                </div>
+              ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead className="border-b border-slate-700">
                       <tr className="text-left">
                         <th className="px-6 py-4 font-medium text-slate-400">Rank</th>
                         <th className="px-6 py-4 font-medium text-slate-400">User</th>
-                        <th className="px-6 py-4 font-medium text-slate-400">Score</th>
+                        <th className="px-6 py-4 font-medium text-slate-400">Avg Rating</th>
                         <th className="px-6 py-4 font-medium text-slate-400">Quizzes Completed</th>
+                        <th className="px-6 py-4 font-medium text-slate-400">Best Quiz</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {leaderboardData.map((user) => (
-                        <tr key={user.rank} className="border-b border-slate-700 hover:bg-slate-700/50">
+                      {leaderboardData.map((user, index) => (
+                        <tr key={user.user_id} className="border-b border-slate-700 hover:bg-slate-700/50">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
-                              {getRankIcon(user.rank)}
+                              {getRankIcon(index + 1)}
                             </div>
                           </td>
-                          <td className="px-6 py-4 font-medium text-white">{user.name}</td>
+                          <td className="px-6 py-4 font-medium text-white">{user.user_name}</td>
                           <td className="px-6 py-4">
                             <Badge variant="secondary" className="bg-green-600 text-white">
-                              {user.score}
+                              {Math.round(user.average_rating)}
                             </Badge>
                           </td>
-                          <td className="px-6 py-4 text-slate-400">{user.quizzes}</td>
+                          <td className="px-6 py-4 text-slate-400">{user.quiz_count}</td>
+                          <td className="px-6 py-4 text-slate-300 text-sm">
+                            {user.best_quiz || 'N/A'}
+                            {user.best_score > 0 && (
+                              <span className="text-green-400 ml-2">({user.best_score})</span>
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+                  {leaderboardData.length === 0 && (
+                    <div className="text-center py-12">
+                      <p className="text-slate-400">No leaderboard data available yet.</p>
+                    </div>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="national">
-            <Card className="bg-slate-800 border-slate-700">
-              <CardContent className="p-8 text-center">
-                <p className="text-slate-400">National leaderboard coming soon...</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="regional">
-            <Card className="bg-slate-800 border-slate-700">
-              <CardContent className="p-8 text-center">
-                <p className="text-slate-400">Regional leaderboard coming soon...</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   );
