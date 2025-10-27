@@ -72,6 +72,11 @@ const Profile = () => {
       setUpdating(false);
     }
   };
+
+  // Check if user has achieved a perfect score (100%) on any quiz
+  const checkPerfectScore = () => {
+    return stats?.has_perfect_score || false;
+  };
   //       .from('profiles')
   //       .select('*')
   //       .eq('id', session.user.id)
@@ -99,77 +104,75 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-gray-50">
       <Navigation />
       
-      <main className="container mx-auto px-6 py-8">
-        {/* Profile Header */}
-        <div className="flex items-center gap-6 mb-8">
-          <Avatar className="w-20 h-20">
-            <AvatarFallback className="text-xl bg-slate-700 text-white">
+      <main className="container mx-auto px-6 py-8 max-w-6xl">
+        {/* Profile Header - Centered */}
+        <div className="flex flex-col items-center text-center mb-12">
+          <Avatar className="w-24 h-24 ring-4 ring-theme-emerald/30 mb-4">
+            <AvatarFallback className="text-2xl bg-gradient-to-br from-theme-emerald to-theme-emerald-dark text-white">
               {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <h1 className="text-2xl font-bold text-white mb-1">{user?.name || 'User'}</h1>
-            <p className="text-slate-400 mb-1">{user?.email}</p>
-            <p className="text-slate-500 text-sm">
-              Joined {user?.created_at ? new Date(user.created_at).getFullYear() : 'Recently'}
-            </p>
-          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{user?.name || 'User'}</h1>
+          <p className="text-gray-800 font-semibold mb-1 text-lg">{user?.email}</p>
+          <p className="text-gray-700 font-medium text-sm">
+            Joined {user?.created_at ? new Date(user.created_at).getFullYear() : 'Recently'}
+          </p>
         </div>
 
-        {/* Stats Overview */}
+        {/* Stats Overview - Symmetric Grid */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <Card className="bg-slate-800 border-slate-700">
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-white mb-1">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            <Card className="bg-white border-gray-200 shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6 text-center">
+                <div className="text-3xl font-bold text-theme-navy mb-2">
                   {stats.total_quizzes_attempted}
                 </div>
-                <p className="text-slate-400 text-sm">Total Quizzes</p>
+                <p className="text-gray-800 font-semibold text-sm">Total Quizzes</p>
               </CardContent>
             </Card>
-            <Card className="bg-slate-800 border-slate-700">
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-white mb-1">
+            <Card className="bg-white border-gray-200 shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6 text-center">
+                <div className="text-3xl font-bold text-theme-emerald mb-2">
                   {Math.round(stats.trivia_stats.average_score)}
                 </div>
-                <p className="text-slate-400 text-sm">Avg Score</p>
+                <p className="text-gray-800 font-semibold text-sm">Avg Score</p>
               </CardContent>
             </Card>
-            <Card className="bg-slate-800 border-slate-700">
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-white mb-1">
+            <Card className="bg-white border-gray-200 shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6 text-center">
+                <div className="text-3xl font-bold text-theme-emerald mb-2">
                   {stats.trivia_stats.best_score}
                 </div>
-                <p className="text-slate-400 text-sm">Best Score</p>
+                <p className="text-gray-800 font-semibold text-sm">Best Score</p>
               </CardContent>
             </Card>
-            <Card className="bg-slate-800 border-slate-700">
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-white mb-1">
+            <Card className="bg-white border-gray-200 shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-6 text-center">
+                <div className="text-3xl font-bold text-theme-navy mb-2">
                   {stats.trivia_stats.topics_attempted.length}
                 </div>
-                <p className="text-slate-400 text-sm">Topics Tried</p>
+                <p className="text-gray-800 font-semibold text-sm">Topics Tried</p>
               </CardContent>
             </Card>
           </div>
         )}
 
         {/* Profile Tabs */}
-        <Tabs defaultValue="overview" className="max-w-6xl">
-                    <TabsList className="grid w-full grid-cols-4 bg-slate-800 border-slate-700">
-            <TabsTrigger value="overview" className="text-slate-400 data-[state=active]:text-blue-400 data-[state=active]:bg-slate-700">
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 bg-white border-gray-200 shadow-sm">
+            <TabsTrigger value="overview" className="text-gray-600 data-[state=active]:text-theme-emerald data-[state=active]:bg-theme-emerald/10">
               Overview
             </TabsTrigger>
-            <TabsTrigger value="achievements" className="text-slate-400 data-[state=active]:text-blue-400 data-[state=active]:bg-slate-700">
+            <TabsTrigger value="achievements" className="text-gray-600 data-[state=active]:text-theme-emerald data-[state=active]:bg-theme-emerald/10">
               Achievements
             </TabsTrigger>
-            <TabsTrigger value="activity" className="text-slate-400 data-[state=active]:text-blue-400 data-[state=active]:bg-slate-700">
+            <TabsTrigger value="activity" className="text-gray-600 data-[state=active]:text-theme-emerald data-[state=active]:bg-theme-emerald/10">
               Activity
             </TabsTrigger>
-            <TabsTrigger value="settings" className="text-slate-400 data-[state=active]:text-blue-400 data-[state=active]:bg-slate-700">
+            <TabsTrigger value="settings" className="text-gray-600 data-[state=active]:text-theme-emerald data-[state=active]:bg-theme-emerald/10">
               Settings
             </TabsTrigger>
           </TabsList>
@@ -181,27 +184,27 @@ const Profile = () => {
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Trivia Stats */}
-                    <Card className="bg-slate-800 border-slate-700">
+                    <Card className="bg-white border-gray-200 shadow-lg">
                       <CardContent className="p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Trivia Performance</h3>
+                        <h3 className="text-lg font-semibold text-theme-navy mb-4">Trivia Performance</h3>
                         <div className="space-y-3">
                           <div className="flex justify-between">
-                            <span className="text-slate-400">Quizzes Attempted</span>
-                            <span className="text-white">{stats.trivia_stats.quizzes_attempted}</span>
+                            <span className="text-gray-600">Quizzes Attempted</span>
+                            <span className="text-theme-navy font-semibold">{stats.trivia_stats.quizzes_attempted}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-slate-400">Total Score</span>
-                            <span className="text-white">{stats.trivia_stats.total_score}</span>
+                            <span className="text-gray-600">Total Score</span>
+                            <span className="text-theme-navy font-semibold">{stats.trivia_stats.total_score}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-slate-400">Average Score</span>
-                            <Badge className="bg-green-600 text-white">
+                            <span className="text-gray-600">Average Score</span>
+                            <Badge className="bg-theme-emerald text-white">
                               {Math.round(stats.trivia_stats.average_score)}
                             </Badge>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-slate-400">Best Score</span>
-                            <Badge className="bg-yellow-600 text-white">
+                            <span className="text-gray-600">Best Score</span>
+                            <Badge className="bg-yellow-500 text-white">
                               {stats.trivia_stats.best_score}
                             </Badge>
                           </div>
@@ -210,21 +213,21 @@ const Profile = () => {
                     </Card>
 
                     {/* Private Quiz Stats */}
-                    <Card className="bg-slate-800 border-slate-700">
+                    <Card className="bg-white border-gray-200 shadow-lg">
                       <CardContent className="p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Private Quizzes</h3>
+                        <h3 className="text-lg font-semibold text-theme-navy mb-4">Private Quizzes</h3>
                         <div className="space-y-3">
                           <div className="flex justify-between">
-                            <span className="text-slate-400">Quizzes Attempted</span>
-                            <span className="text-white">{stats.private_stats.quizzes_attempted}</span>
+                            <span className="text-gray-600">Quizzes Attempted</span>
+                            <span className="text-theme-navy font-semibold">{stats.private_stats.quizzes_attempted}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-slate-400">Total Score</span>
-                            <span className="text-white">{stats.private_stats.total_score}</span>
+                            <span className="text-gray-600">Total Score</span>
+                            <span className="text-theme-navy font-semibold">{stats.private_stats.total_score}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-slate-400">Average Score</span>
-                            <Badge className="bg-blue-600 text-white">
+                            <span className="text-gray-600">Average Score</span>
+                            <Badge className="bg-blue-500 text-white">
                               {Math.round(stats.private_stats.average_score)}
                             </Badge>
                           </div>
@@ -284,14 +287,14 @@ const Profile = () => {
               </Card>
 
               {/* Perfect Score */}
-              <Card className={`bg-slate-800 border-slate-700 ${stats && stats.trivia_stats.best_score === 100 ? 'ring-2 ring-purple-500' : ''}`}>
+              <Card className={`bg-slate-800 border-slate-700 ${stats && checkPerfectScore() ? 'ring-2 ring-purple-500' : ''}`}>
                 <CardContent className="p-6 text-center">
-                  <div className={`w-16 h-16 ${stats && stats.trivia_stats.best_score === 100 ? 'bg-purple-500' : 'bg-slate-600'} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                  <div className={`w-16 h-16 ${stats && checkPerfectScore() ? 'bg-purple-500' : 'bg-slate-600'} rounded-full flex items-center justify-center mx-auto mb-4`}>
                     <Target className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-lg font-semibold text-white mb-2">Perfect Score</h3>
                   <p className="text-slate-400 text-sm">Score 100% on any quiz</p>
-                  {stats && stats.trivia_stats.best_score === 100 && (
+                  {stats && checkPerfectScore() && (
                     <Badge className="bg-purple-500 text-white mt-2">Unlocked!</Badge>
                   )}
                 </CardContent>

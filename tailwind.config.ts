@@ -63,6 +63,15 @@ export default {
         },
         "warm-beige": "hsl(var(--warm-beige))",
         "soft-green": "hsl(var(--soft-green))",
+        // Custom 2-color theme
+        theme: {
+          navy: "#1e293b",        // Deep Navy Blue - Primary
+          emerald: "#10b981",     // Vibrant Emerald - Accent
+          "navy-light": "#334155",
+          "navy-dark": "#0f172a",
+          "emerald-light": "#34d399",
+          "emerald-dark": "#059669",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

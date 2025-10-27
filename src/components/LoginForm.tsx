@@ -41,13 +41,13 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
           Welcome to Quizzler
         </h1>
-        <p className="text-muted-foreground">
-          Join our community. Sign up or log in to get started.
+        <p className="text-gray-800 font-semibold">
+          Sign in to continue your learning journey
         </p>
       </div>
 
@@ -62,7 +62,7 @@ const LoginForm = () => {
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-12 px-4 border-border bg-background text-foreground placeholder:text-muted-foreground"
+            className="h-12 px-4 border-gray-300 bg-gray-50 text-theme-navy placeholder:text-gray-500 rounded-lg focus:border-theme-emerald focus:ring-theme-emerald/20 focus:bg-white transition-all duration-200"
             required
           />
         </div>
@@ -77,25 +77,25 @@ const LoginForm = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-12 px-4 border-border bg-background text-foreground placeholder:text-muted-foreground"
+            className="h-12 px-4 border-gray-300 bg-gray-50 text-theme-navy placeholder:text-gray-500 rounded-lg focus:border-theme-emerald focus:ring-theme-emerald/20 focus:bg-white transition-all duration-200"
             required
           />
         </div>
 
         <Button
           type="submit"
-          className="w-full h-12 bg-sage hover:bg-sage/90 text-white font-medium transition-colors"
+          className="w-full h-12 bg-theme-emerald hover:bg-theme-emerald-dark text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
           disabled={loading}
         >
           {loading ? "Signing In..." : "Sign In"}
         </Button>
 
         <div className="text-center">
-          <p className="text-muted-foreground">
+          <p className="text-gray-800 font-semibold">
             Don't have an account?{" "}
             <a
               href="/signup"
-              className="text-sage hover:text-sage/80 font-medium underline transition-colors"
+              className="text-theme-emerald hover:text-theme-emerald-dark font-bold underline transition-colors"
             >
               Sign Up
             </a>

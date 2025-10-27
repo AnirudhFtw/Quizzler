@@ -23,82 +23,48 @@ const Navigation = () => {
   };
   
   return (
-    <nav className={`w-full px-6 py-4 flex items-center justify-between backdrop-blur-sm border-b ${
-      isDarkPage 
-        ? "bg-slate-900/95 border-slate-700/50" 
-        : "bg-background/95 border-border/20"
-    }`}>
-      <div className="flex items-center space-x-2">
-        <div className={`w-6 h-6 rounded-sm flex items-center justify-center ${
-          isDarkPage ? "bg-white" : "bg-primary"
-        }`}>
-          <div className={`w-3 h-3 rounded-sm ${
-            isDarkPage ? "bg-slate-900" : "bg-background"
-          }`}></div>
+    <nav className="w-full px-6 py-4 flex items-center justify-between backdrop-blur-sm border-b bg-theme-navy/95 border-theme-navy/30 shadow-lg">
+      <div className="flex items-center space-x-3">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-theme-emerald to-theme-emerald-dark flex items-center justify-center shadow-lg">
+          <div className="w-4 h-4 rounded bg-white/90"></div>
         </div>
-        <span className={`text-xl font-semibold ${
-          isDarkPage ? "text-white" : "text-foreground"
-        }`}>Quizzler</span>
+        <span className="text-xl font-bold text-white tracking-tight">Quizzler</span>
       </div>
       
       {isAboutPage ? (
         <div className="hidden md:flex items-center space-x-8">
-          <a href="/contact" className={`transition-colors ${
-            isDarkPage 
-              ? "text-white hover:text-green-400" 
-              : "text-foreground hover:text-sage"
-          }`}>
+          <a href="/contact" className="text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium">
             Contact
           </a>
         </div>
       ) : isAuthPage ? (
         <div className="hidden md:flex items-center space-x-8">
-          <a href="/about" className={`transition-colors ${
-            isDarkPage 
-              ? "text-white hover:text-green-400" 
-              : "text-foreground hover:text-sage"
-          }`}>
+          <a href="/about" className="text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium">
             About
           </a>
-          <a href="/contact" className={`transition-colors ${
-            isDarkPage 
-              ? "text-white hover:text-green-400" 
-              : "text-foreground hover:text-sage"
-          }`}>
+          <a href="/contact" className="text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium">
             Contact
           </a>
         </div>
       ) : isAuthenticated ? (
-        <div className="hidden md:flex items-center space-x-8">
-          <a href="/dashboard" className={`transition-colors ${
-            isDarkPage 
-              ? "text-white hover:text-green-400" 
-              : "text-foreground hover:text-sage"
-          }`}>
+        <div className="hidden md:flex items-center space-x-6">
+          <a href="/dashboard" className="text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium">
             Home
           </a>
-          <a href="/profile" className={`transition-colors ${
-            isDarkPage 
-              ? "text-white hover:text-green-400" 
-              : "text-foreground hover:text-sage"
-          }`}>
+          <a href="/profile" className="text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium">
             My Profile
           </a>
-          <span className={`text-sm ${
-            isDarkPage ? "text-white/70" : "text-muted-foreground"
-          }`}>
-            Hi, {user?.name}
-          </span>
-          <button 
-            onClick={handleLogout}
-            className={`transition-colors ${
-              isDarkPage 
-                ? "text-white hover:text-green-400" 
-                : "text-foreground hover:text-sage"
-            }`}
-          >
-            Logout
-          </button>
+          <div className="flex items-center space-x-4 pl-4 border-l border-white/20">
+            <span className="text-sm text-white/70 font-medium">
+              Hi, {user?.name}
+            </span>
+            <button 
+              onClick={handleLogout}
+              className="px-4 py-2 text-sm font-medium text-white bg-theme-emerald hover:bg-theme-emerald-dark rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       ) : null}
     </nav>

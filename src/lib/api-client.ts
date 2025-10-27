@@ -250,6 +250,35 @@ class ApiClient {
   async getUserStats(): Promise<UserStats> {
     return this.request<UserStats>(API_ENDPOINTS.RESULTS.USER_STATS);
   }
+
+  // Import questions from CSV
+  async importQuestions(file: File): Promise<{ message: string; questions: any[] }> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const url = `${this.baseUrl}/quizzes/import-questions`;
+    const config: RequestInit = {
+      method: 'POST',
+      body: formData,
+      headers: {
+        ...getAuthHeaders(),
+        // Don't set Content-Type for FormData, let browser set it with boundary
+      },
+    };
+
+    // Remove Content-Type from headers for FormData
+    if (config.headers && 'Content-Type' in config.headers) {
+      delete (config.headers as any)['Content-Type'];
+    }
+
+    try {
+      const response = await fetch(url, config);
+      return this.handleResponse<{ message: string; questions: any[] }>(response);
+    } catch (error) {
+      console.error('Import questions failed:', { url, error });
+      throw error;
+    }
+  }
 }
 
 // Export singleton instance
@@ -271,6 +300,7 @@ export const quizApi = {
     apiClient.getTriviaQuizzes(params),
   getDetails: (quizId: string) => apiClient.getQuizDetails(quizId),
   getTopics: () => apiClient.getAvailableTopics(),
+  importQuestions: (file: File) => apiClient.importQuestions(file),
 };
 
 export const sessionApi = {

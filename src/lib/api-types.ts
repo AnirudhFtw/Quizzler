@@ -41,7 +41,6 @@ export interface QuestionCreate {
   option_c: string;
   option_d: string;
   correct_option: 'a' | 'b' | 'c' | 'd';
-  mark?: number;
 }
 
 export interface QuizCreate {
@@ -89,7 +88,6 @@ export interface Question {
   option_b: string;
   option_c: string;
   option_d: string;
-  mark: number;
 }
 
 export interface QuestionWithAnswer extends Question {
@@ -195,6 +193,7 @@ export interface UserStats {
     average_score: number;
     best_score: number;
   };
+  has_perfect_score: boolean;
 }
 
 

@@ -55,17 +55,17 @@ const SignUpForm = () => {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
           Create your Account
         </h1>
-        <p className="text-muted-foreground">
-          Let's get started on your quizzing journey!
+        <p className="text-gray-800 font-semibold">
+          Join our community and start your learning journey
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="fullName" className="sr-only">
             Full Name
@@ -76,7 +76,7 @@ const SignUpForm = () => {
             placeholder="Full Name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="h-12 px-4 border-border bg-background text-foreground placeholder:text-muted-foreground"
+            className="h-12 px-4 border-gray-300 bg-gray-50 text-theme-navy placeholder:text-gray-500 rounded-lg focus:border-theme-emerald focus:ring-theme-emerald/20 focus:bg-white transition-all duration-200"
             required
           />
         </div>
@@ -91,7 +91,7 @@ const SignUpForm = () => {
             placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-12 px-4 border-border bg-background text-foreground placeholder:text-muted-foreground"
+            className="h-12 px-4 border-gray-300 bg-gray-50 text-theme-navy placeholder:text-gray-500 rounded-lg focus:border-theme-emerald focus:ring-theme-emerald/20 focus:bg-white transition-all duration-200"
             required
           />
         </div>
@@ -106,7 +106,7 @@ const SignUpForm = () => {
             placeholder="Password (min 6 characters)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-12 px-4 border-border bg-background text-foreground placeholder:text-muted-foreground"
+            className="h-12 px-4 border-gray-300 bg-gray-50 text-theme-navy placeholder:text-gray-500 rounded-lg focus:border-theme-emerald focus:ring-theme-emerald/20 focus:bg-white transition-all duration-200"
             required
             minLength={6}
           />
@@ -114,20 +114,20 @@ const SignUpForm = () => {
 
         <Button
           type="submit"
-          className="w-full h-12 bg-sage hover:bg-sage/90 text-white font-medium transition-colors"
+          className="w-full h-12 bg-theme-emerald hover:bg-theme-emerald-dark text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
           disabled={loading}
         >
           {loading ? "Creating Account..." : "Sign Up"}
         </Button>
 
         <div className="text-center">
-          <p className="text-muted-foreground">
+          <p className="text-gray-800 font-semibold">
             Already have an account?{" "}
             <a
               href="/"
-              className="text-sage hover:text-sage/80 font-medium underline transition-colors"
+              className="text-theme-emerald hover:text-theme-emerald-dark font-bold underline transition-colors"
             >
-              Log In
+              Sign In
             </a>
           </p>
         </div>

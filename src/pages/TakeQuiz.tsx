@@ -23,7 +23,7 @@ const TakeQuiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [showWarning, setShowWarning] = useState(false);
-  const [violationCount, setViolationCount] = useState(0);
+  const [hasReceivedWarning, setHasReceivedWarning] = useState(false); // In-memory boolean tracker
   const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
   const [quiz, setQuiz] = useState<StartQuizResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -77,14 +77,32 @@ const TakeQuiz = () => {
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        setViolationCount(prev => prev + 1);
-        setShowWarning(true);
+        console.log('Tab switch detected. Has received warning:', hasReceivedWarning);
+        if (!hasReceivedWarning) {
+          // First tab switch - show warning and set flag to true
+          console.log('First violation - showing warning');
+          setHasReceivedWarning(true);
+          setShowWarning(true);
+        } else {
+          // Second tab switch - auto-submit with 0 marks
+          console.log('Second violation - auto-submitting with 0 marks');
+          handleAutoSubmitViolation();
+        }
       }
     };
 
     const handleBlur = () => {
-      setViolationCount(prev => prev + 1);
-      setShowWarning(true);
+      console.log('Window blur detected. Has received warning:', hasReceivedWarning);
+      if (!hasReceivedWarning) {
+        // First tab switch - show warning and set flag to true
+        console.log('First violation - showing warning');
+        setHasReceivedWarning(true);
+        setShowWarning(true);
+      } else {
+        // Second tab switch - auto-submit with 0 marks
+        console.log('Second violation - auto-submitting with 0 marks');
+        handleAutoSubmitViolation();
+      }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -94,7 +112,7 @@ const TakeQuiz = () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("blur", handleBlur);
     };
-  }, [quiz]);
+  }, [quiz, hasReceivedWarning]);
 
   // Format time as MM:SS
   const formatTime = (seconds: number) => {
@@ -141,6 +159,25 @@ const TakeQuiz = () => {
     } catch (error) {
       console.error("Failed to submit quiz:", error);
       toast.error(error instanceof Error ? error.message : "Failed to submit quiz");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleAutoSubmitViolation = async () => {
+    if (!quiz || !quizId) return;
+    
+    setSubmitting(true);
+    
+    try {
+      // Submit with empty answers (results in 0 marks)
+      const result = await sessionApi.submit(quizId, { answers: {} });
+      toast.error("Quiz auto-submitted due to rule violation. Score: 0");
+      navigate(`/quiz-results/${quizId}`);
+    } catch (error) {
+      console.error("Failed to auto-submit quiz:", error);
+      toast.error("Quiz ended due to rule violation");
+      navigate('/dashboard');
     } finally {
       setSubmitting(false);
     }
@@ -225,13 +262,20 @@ const TakeQuiz = () => {
 
         {/* Navigation */}
         <div className="flex justify-between max-w-2xl mx-auto">
-          <Button 
-            variant="outline" 
-            onClick={handlePrevious}
-            disabled={currentQuestion === 0}
-          >
-            Previous
-          </Button>
+          {/* Only show Previous button for omni navigation */}
+          {quiz.quiz.navigation_type === 'omni' && (
+            <Button 
+              variant="outline" 
+              onClick={handlePrevious}
+              disabled={currentQuestion === 0}
+            >
+              Previous
+            </Button>
+          )}
+          
+          {/* For restricted navigation, add spacer div */}
+          {quiz.quiz.navigation_type === 'restricted' && <div />}
+          
           <Button 
             onClick={currentQuestion === quiz.questions.length - 1 ? handleSubmitQuiz : handleNext}
             className="bg-soft-green hover:bg-soft-green/90"
@@ -245,30 +289,36 @@ const TakeQuiz = () => {
 
       {/* Warning Dialog */}
       <Dialog open={showWarning} onOpenChange={setShowWarning}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-2xl w-full mx-4">
           <DialogHeader>
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-                <AlertTriangle className="w-8 h-8 text-red-600" />
+            <div className="flex items-center justify-center mb-6">
+              <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-10 h-10 text-red-600" />
               </div>
             </div>
-            <DialogTitle className="text-center text-xl font-bold">Warning!</DialogTitle>
-            <DialogDescription className="text-center space-y-2">
-              <p>
+            <DialogTitle className="text-center text-3xl font-bold text-red-600 mb-4">
+              Warning!
+            </DialogTitle>
+            <DialogDescription className="text-center space-y-4">
+              <p className="text-lg font-medium text-gray-800">
                 Switching tabs or minimizing the window is not allowed during the quiz. 
                 This action has been logged.
               </p>
-              <p className="text-sm">
-                Further violations may lead to disqualification.
+              <p className="text-base font-semibold text-red-600 bg-red-50 p-4 rounded-lg border border-red-200">
+                This is your first and only warning. Any further tab switches will automatically end the quiz with 0 marks.
+              </p>
+              <p className="text-sm font-medium text-gray-600 bg-gray-100 p-3 rounded-lg">
+                Warning issued - Next violation will end quiz
               </p>
             </DialogDescription>
           </DialogHeader>
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-8">
             <Button 
               onClick={() => setShowWarning(false)}
-              className="w-full bg-soft-green hover:bg-soft-green/90"
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 text-lg"
+              size="lg"
             >
-              I Understand
+              I Understand - Continue Quiz
             </Button>
           </div>
         </DialogContent>

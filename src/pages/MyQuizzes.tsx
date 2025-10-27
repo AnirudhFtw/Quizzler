@@ -182,33 +182,83 @@ Good luck! 📚`;
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gray-50">
         <Navigation />
-        <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="flex flex-col justify-center items-center py-20">
+          <div className="w-16 h-16 bg-green-500 rounded-xl flex items-center justify-center mb-6">
+            <Users className="w-8 h-8 text-white" />
+          </div>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-200 border-t-green-500 mb-4"></div>
+          <p className="text-black font-semibold">Loading your quizzes...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <Navigation />
       
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-6 py-12 max-w-7xl">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">My Private Quizzes</h1>
-            <p className="text-muted-foreground">
-              Manage your created private quizzes. Share the Quiz ID with others to allow them access.
-            </p>
+        <div className="flex justify-between items-start mb-12">
+          <div className="flex-1">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold text-black mb-2">My Private Quizzes</h1>
+                <p className="text-lg text-black font-medium max-w-2xl">
+                  Manage your created private quizzes. Share the Quiz ID with others to allow them access.
+                </p>
+              </div>
+            </div>
+            
+            {/* Stats Bar */}
+            <div className="flex items-center gap-8 p-6 bg-white rounded-xl border border-green-200 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center border border-green-200">
+                  <Users className="w-5 h-5 text-black" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-black">Total Quizzes</p>
+                  <p className="text-2xl font-bold text-black">{quizzes.length}</p>
+                </div>
+              </div>
+              <div className="h-10 w-px bg-green-200"></div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-black">Active Quizzes</p>
+                  <p className="text-2xl font-bold text-black">
+                    {quizzes.filter(q => getQuizStatus(q).status === "Active").length}
+                  </p>
+                </div>
+              </div>
+              <div className="h-10 w-px bg-green-200"></div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-black">Upcoming</p>
+                  <p className="text-2xl font-bold text-black">
+                    {quizzes.filter(q => getQuizStatus(q).status === "Upcoming").length}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
+          
           <Button 
             onClick={() => navigate('/create-quiz')}
-            className="bg-primary hover:bg-primary/90"
+            className="bg-green-500 hover:bg-green-600 text-white font-semibold px-8 py-3 ml-8"
+            size="lg"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="w-5 h-5 mr-2" />
             Create Quiz
           </Button>
         </div>
@@ -216,93 +266,127 @@ Good luck! 📚`;
         {/* Quizzes Grid */}
         {quizzes.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-6xl mb-4">📝</div>
-            <h3 className="text-xl font-semibold mb-2">No private quizzes found</h3>
-            <p className="text-muted-foreground mb-6">
-              Create your first private quiz to get started!
+            <div className="mx-auto w-32 h-32 bg-green-50 border border-green-200 rounded-2xl flex items-center justify-center mb-8">
+              <div className="text-6xl">📝</div>
+            </div>
+            <h3 className="text-2xl font-bold text-black mb-3">No private quizzes found</h3>
+            <p className="text-black font-medium mb-8 max-w-md mx-auto">
+              Create your first private quiz to get started! You can share it with specific people using the Quiz ID.
             </p>
             <Button 
               onClick={() => navigate('/create-quiz')}
-              className="bg-primary hover:bg-primary/90"
+              className="bg-green-500 hover:bg-green-600 text-white font-semibold px-8 py-3"
+              size="lg"
             >
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="w-5 h-5 mr-2" />
               Create Your First Quiz
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
             {quizzes.map((quiz) => {
               const status = getQuizStatus(quiz);
               const canStart = canStartQuiz(quiz);
               
               return (
-                <Card key={quiz.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start mb-2">
-                      <CardTitle className="text-lg line-clamp-2">{quiz.title}</CardTitle>
-                      <Badge variant="secondary" className={`${status.color} text-white text-xs`}>
+                <Card key={quiz.id} className="bg-white border border-green-200 shadow-lg hover:shadow-xl transition-all duration-300 rounded-lg overflow-hidden">
+                  {/* Status Indicator Strip */}
+                  <div className={`h-1 ${status.status === "Active" ? "bg-green-500" : status.status === "Upcoming" ? "bg-blue-500" : "bg-red-500"}`}></div>
+                  
+                  <CardHeader className="pb-4">
+                    <div className="flex justify-between items-start mb-3">
+                      <CardTitle className="text-xl font-bold text-black line-clamp-2 pr-3 flex-1">{quiz.title}</CardTitle>
+                      <Badge className={`${status.status === "Active" ? "bg-green-100 text-green-800" : status.status === "Upcoming" ? "bg-blue-100 text-blue-800" : "bg-red-100 text-red-800"} text-xs font-semibold px-3 py-1 rounded whitespace-nowrap ml-2`}>
                         {status.status}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
+                    <p className="text-black line-clamp-2 text-sm leading-relaxed">
                       {quiz.description}
                     </p>
                   </CardHeader>
                   
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 pb-6">
                     {/* Quiz Info */}
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <User className="w-4 h-4" />
-                        <span>Created by you</span>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 text-black bg-green-50 border border-green-200 p-3 rounded-lg">
+                        <div className="w-6 h-6 bg-green-500 rounded-lg flex items-center justify-center">
+                          <User className="w-3 h-3 text-white" />
+                        </div>
+                        <span className="font-semibold text-sm text-black">Created by you</span>
                       </div>
                       
                       {/* Quiz ID for sharing */}
-                      <div className="flex items-center gap-2 p-2 bg-muted rounded text-xs">
-                        <span className="font-mono flex-1 truncate">ID: {quiz.id}</span>
+                      <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <span className="font-mono flex-1 text-black font-semibold truncate text-xs">ID: {quiz.id}</span>
                         <Button
                           size="sm"
                           variant="ghost"
                           onClick={() => copyQuizId(quiz.id)}
-                          className="h-6 w-6 p-0"
+                          className="h-7 w-7 p-0 hover:bg-blue-100"
                         >
-                          <Copy className="w-3 h-3" />
+                          <Copy className="w-3 h-3 text-black" />
                         </Button>
                       </div>
                       
-                      {quiz.question_count && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Users className="w-4 h-4" />
-                          <span>{quiz.question_count} questions</span>
+                      {/* Quiz Stats Row */}
+                      <div className="grid grid-cols-2 gap-3">
+                        {quiz.question_count && (
+                          <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <div className="w-5 h-5 bg-green-500 rounded flex items-center justify-center">
+                              <Users className="w-3 h-3 text-white" />
+                            </div>
+                            <span className="text-xs font-semibold text-black">{quiz.question_count} questions</span>
+                          </div>
+                        )}
+                        
+                        <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <div className="w-5 h-5 bg-blue-500 rounded flex items-center justify-center">
+                            <Clock className="w-3 h-3 text-white" />
+                          </div>
+                          <span className="text-xs font-semibold text-black">{quiz.duration} min</span>
                         </div>
-                      )}
-                      
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="w-4 h-4" />
-                        <span>{quiz.duration} minutes</span>
                       </div>
                       
-                      {quiz.start_time && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Calendar className="w-4 h-4" />
-                          <span className="text-xs">Starts: {formatDateTime(quiz.start_time)}</span>
-                        </div>
-                      )}
-                      
-                      {quiz.end_time && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Calendar className="w-4 h-4" />
-                          <span className="text-xs">Ends: {formatDateTime(quiz.end_time)}</span>
+                      {/* Schedule Info */}
+                      {(quiz.start_time || quiz.end_time) && (
+                        <div className="space-y-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                          {quiz.start_time && (
+                            <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 bg-blue-500 rounded flex items-center justify-center">
+                                <Calendar className="w-3 h-3 text-white" />
+                              </div>
+                              <div>
+                                <p className="text-xs font-semibold text-black">Starts</p>
+                                <p className="text-xs text-black">{formatDateTime(quiz.start_time)}</p>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {quiz.end_time && (
+                            <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 bg-blue-500 rounded flex items-center justify-center">
+                                <Calendar className="w-3 h-3 text-white" />
+                              </div>
+                              <div>
+                                <p className="text-xs font-semibold text-black">Ends</p>
+                                <p className="text-xs text-black">{formatDateTime(quiz.end_time)}</p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="space-y-2">
+                    <div className="space-y-3 pt-2">
                       <Button 
                         onClick={() => handleStartQuiz(quiz.id)}
                         disabled={!canStart}
-                        className="w-full bg-primary hover:bg-primary/90"
+                        className={`w-full font-semibold py-3 ${
+                          canStart 
+                            ? "bg-green-500 hover:bg-green-600 text-white" 
+                            : "bg-gray-200 text-black cursor-not-allowed"
+                        }`}
                       >
                         {!canStart ? 
                           (status.status === "Upcoming" ? "Not Yet Started" : "Quiz Ended") : 
@@ -310,12 +394,12 @@ Good luck! 📚`;
                         }
                       </Button>
                       
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-2 gap-3">
                         <Button 
                           variant="outline"
                           size="sm"
                           onClick={() => copyQuizId(quiz.id)}
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 border-blue-300 hover:bg-blue-50 font-semibold text-black"
                         >
                           <Share2 className="w-4 h-4" />
                           Share Quiz
@@ -325,7 +409,7 @@ Good luck! 📚`;
                           variant="outline"
                           size="sm"
                           onClick={() => handleViewResults(quiz.id, quiz.title)}
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 border-green-300 hover:bg-green-50 font-semibold text-black"
                         >
                           <Eye className="w-4 h-4" />
                           View Results
@@ -334,15 +418,15 @@ Good luck! 📚`;
                       
                       {/* Download Option - Only show if quiz has ended */}
                       {status.status === "Ended" && (
-                        <div className="pt-2 border-t">
+                        <div className="pt-3 border-t border-green-200">
                           <Button 
                             variant="ghost"
                             size="sm"
                             onClick={() => handleDownloadResults(quiz.id)}
-                            className="flex items-center gap-2 text-xs w-full"
+                            className="w-full flex items-center gap-2 text-sm hover:bg-green-50 font-semibold text-black"
                           >
-                            <Download className="w-3 h-3" />
-                            Download CSV
+                            <Download className="w-4 h-4" />
+                            Download CSV Results
                           </Button>
                         </div>
                       )}
