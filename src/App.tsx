@@ -18,6 +18,8 @@ import Profile from "./pages/Profile";
 import TakeQuiz from "./pages/TakeQuiz";
 import QuizResults from "./pages/QuizResults";
 import QuizResultsManagement from "./pages/QuizResultsManagement";
+import HostLiveQuiz from "./pages/HostLiveQuiz";
+import JoinLiveQuiz from "./pages/JoinLiveQuiz";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -82,6 +84,12 @@ const App = () => (
                 <QuizResultsManagement />
               </ProtectedRoute>
             } />
+            <Route path="/host-live-quiz" element={
+              <ProtectedRoute>
+                <HostLiveQuiz />
+              </ProtectedRoute>
+            } />
+            <Route path="/join-live-quiz" element={<JoinLiveQuiz />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

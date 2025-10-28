@@ -47,15 +47,7 @@ The application will be available at `http://localhost:8080`
 ### Styling & UI
 
 - **Tailwind CSS** - Utility-first CSS framework for rapid styling
-- **shadcn/ui** - Beautiful and accessible React component library
-
-### State Management & Routing
-
-- **React Router DOM** - Declarative routing for React applications
-- **Custom Hooks** - Reusable logic for authentication and mobile detection
-
-### API Integration
-
+- **shadcn/ui** - Beautiful and accessible React component libraryAPI Integration
 - **Fetch API** - Modern HTTP client for backend communication
 - **Custom API Client** - Centralized API management with error handling
 

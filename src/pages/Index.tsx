@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import Navigation from "@/components/Navigation";
 import LoginForm from "@/components/LoginForm";
 import studyIllustration from "@/assets/study-illustration.png";
-import { Mail, Phone, Instagram, MapPin } from "lucide-react";
+import { Mail, Phone, Instagram, MapPin, Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [userIp, setUserIp] = useState<string>("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Get user's IP address
@@ -54,6 +56,30 @@ const Index = () => {
           </div>
         </div>
       </main>
+
+      {/* Live Quiz Section */}
+      <section className="w-full py-12 px-4 sm:px-6 bg-gradient-to-br from-purple-50 to-pink-100">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="space-y-6">
+            <div className="w-20 h-20 rounded-full bg-purple-500/10 flex items-center justify-center mx-auto">
+              <Gamepad2 className="w-10 h-10 text-purple-600" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
+              Join Live Quiz
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+              Have a room code? Jump into a live quiz session and compete with other players in real-time!
+            </p>
+            <Button 
+              onClick={() => navigate('/join-live-quiz')}
+              size="lg" 
+              className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 text-lg font-medium"
+            >
+              Join Live Quiz
+            </Button>
+          </div>
+        </div>
+      </section>
 
       {/* About Section */}
       <section id="about" className="min-h-screen w-full py-16 sm:py-20 px-4 sm:px-6 bg-gray-50/80 flex items-center">

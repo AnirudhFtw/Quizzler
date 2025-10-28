@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Plus, BarChart3, Users, TrendingUp, Trophy, Clock, Calendar } from 'lucide-react';
+import { BookOpen, Plus, BarChart3, Users, TrendingUp, Trophy, Clock, Calendar, Gamepad2 } from 'lucide-react';
 import { useAuth } from "@/hooks/useAuth";
 
 const Dashboard = () => {
@@ -39,6 +39,13 @@ const Dashboard = () => {
       description: "Design your own challenge",
       color: "bg-soft-green",
       onClick: () => navigate('/create-quiz')
+    },
+    {
+      icon: Gamepad2,
+      title: "Host Live Quiz",
+      description: "Create real-time quiz rooms",
+      color: "bg-soft-green",
+      onClick: () => navigate('/host-live-quiz')
     },
     {
       icon: Users,
