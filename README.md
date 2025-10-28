@@ -1,73 +1,97 @@
-# Welcome to your Lovable family 
+# Quizzler Frontend
 
-## Project info
+## About the Application
 
-**URL**: https://lovable.dev/projects/105224f6-5b5a-4d8a-8fc4-c64d1a166294
+Quizzler is a comprehensive quiz management platform that enables users to create, share, and take interactive quizzes. The application provides a seamless experience for both quiz creators and participants with features designed for educational institutions, trainers, and quiz enthusiasts.
 
-## How can I edit this code?
+### Key Features
 
-There are several ways of editing your application.
+- **User Authentication**: Secure sign-up and sign-in system with email verification
+- **Quiz Types**: Support for both public trivia quizzes and private quizzes
+- **CSV Import**: Bulk question import functionality for efficient quiz creation
+- **Real-time Quiz Taking**: Interactive quiz interface with timer and violation detection
+- **Results & Analytics**: Detailed quiz results with question-by-question review
+- **Leaderboards**: Global and quiz-specific rankings for competitive engagement
+- **User Profiles**: Personal dashboards with statistics and achievement tracking
+- **Responsive Design**: Fully responsive interface optimized for all devices
+- **Admin Features**: Quiz management and results monitoring for creators
 
-**Use Lovable**
+## Getting Started
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/105224f6-5b5a-4d8a-8fc4-c64d1a166294) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Clone the repository
+git clone <repository-url>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to the frontend directory
+cd Quizzler
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Tech Stack
 
-**Use GitHub Codespaces**
+### Frontend Framework
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- **React 18.3.1** - Modern JavaScript library for building user interfaces
+- **TypeScript** - Type-safe development with enhanced developer experience
+- **Vite** - Fast build tool and development server
 
-## What technologies are used for this project?
+### Styling & UI
 
-This project is built with:
+- **Tailwind CSS** - Utility-first CSS framework for rapid styling
+- **shadcn/ui** - Beautiful and accessible React component library
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### State Management & Routing
 
-## How can I deploy this project?
+- **React Router DOM** - Declarative routing for React applications
+- **Custom Hooks** - Reusable logic for authentication and mobile detection
 
-Simply open [Lovable](https://lovable.dev/projects/105224f6-5b5a-4d8a-8fc4-c64d1a166294) and click on Share -> Publish.
+### API Integration
 
-## Can I connect a custom domain to my Lovable project?
+- **Fetch API** - Modern HTTP client for backend communication
+- **Custom API Client** - Centralized API management with error handling
 
-Yes, you can!
+### Additional Libraries
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- **Sonner** - Toast notifications for user feedback
+- **React Hook Form** - Efficient form handling and validation
+- **Date Utilities** - Date formatting and manipulation
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ui/             # shadcn/ui components
+│   └── ...             # Custom components
+├── pages/              # Page components/routes
+├── hooks/              # Custom React hooks
+├── lib/                # Utility functions and API client
+├── assets/             # Static assets (images, icons)
+└── types/              # TypeScript type definitions
+```
+
+## Features Overview
+
+- **Responsive Design**: Mobile-first approach with Tailwind CSS
+- **Accessibility**: WCAG compliant components and navigation
+- **Performance**: Optimized builds with code splitting
+- **Type Safety**: Full TypeScript integration
+- **Modern Development**: Hot reload, fast builds, and great DX
+
+## Backend Integration
+
+This frontend connects to a FastAPI backend server that provides:
+
+- RESTful API endpoints
+- User authentication with JWT tokens
+- PostgreSQL database integration
+- Real-time quiz session management

@@ -60,40 +60,39 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navigation />
       
-      <main className="flex-1 flex items-center justify-center min-h-[calc(100vh-80px)]">
-        {/* Main content container taking 60-70% of viewport */}
-        <div className="w-full max-w-5xl mx-auto px-6" style={{height: '70vh'}}>
-          {/* Welcome Section - 20% of content space */}
-          <div className="text-center mb-8" style={{height: '20%'}}>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
+      <main className="flex-1 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Welcome Section */}
+          <div className="text-center mb-8 lg:mb-12">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 lg:mb-4 leading-tight">
               Welcome back, {user?.name || 'User'}!
             </h1>
-            <p className="text-lg text-gray-800 font-semibold max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg text-gray-800 font-semibold max-w-3xl mx-auto px-4">
               Ready to challenge your knowledge or create a new quiz? Let's get started with your learning journey.
             </p>
           </div>
 
-          {/* Action Cards Grid - 80% of content space */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-4/5">
+          {/* Action Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             {actionCards.map((card, index) => (
               <Card 
                 key={index} 
-                className="cursor-pointer border-2 border-gray-300 bg-white hover:border-theme-navy hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-xl flex items-center justify-center"
+                className="cursor-pointer border-2 border-gray-300 bg-white hover:border-theme-navy hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-xl"
                 onClick={card.onClick}
               >
-                <CardContent className="p-8 w-full">
-                  <div className="flex flex-col items-center text-center space-y-4">
+                <CardContent className="p-4 sm:p-6 lg:p-8 h-full">
+                  <div className="flex flex-col items-center text-center space-y-3 lg:space-y-4 h-full justify-center">
                     {/* Icon */}
-                    <div className="bg-theme-emerald p-5 rounded-2xl shadow-lg hover:scale-105 transition-transform duration-300">
-                      <card.icon className="w-12 h-12 text-white" />
+                    <div className="bg-theme-emerald p-3 sm:p-4 lg:p-5 rounded-2xl shadow-lg hover:scale-105 transition-transform duration-300">
+                      <card.icon className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
                     </div>
                     
                     {/* Content */}
-                    <div className="space-y-2">
-                      <h3 className="text-2xl font-bold text-gray-900">
+                    <div className="space-y-1 lg:space-y-2">
+                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
                         {card.title}
                       </h3>
-                      <p className="text-gray-800 font-semibold text-base leading-relaxed">
+                      <p className="text-sm sm:text-base text-gray-800 font-semibold leading-relaxed">
                         {card.description}
                       </p>
                     </div>
@@ -103,8 +102,6 @@ const Dashboard = () => {
             ))}
           </div>
         </div>
-
-
       </main>
 
       {/* Footer */}

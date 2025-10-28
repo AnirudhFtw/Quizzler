@@ -285,20 +285,20 @@ const CreateQuiz = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-x-hidden">
       <Navigation />
       
-      <main className="container mx-auto px-4 py-8 max-w-6xl overflow-x-hidden">
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-6xl overflow-x-hidden">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
             Create a New Quiz
           </h1>
-          <p className="text-lg text-gray-700 font-medium">
+          <p className="text-base sm:text-lg text-gray-700 font-medium">
             Build engaging quizzes with our step-by-step wizard
           </p>
         </div>
 
         {/* Progress Steps */}
-        <div className="mb-8 overflow-hidden">
-          <div className="flex items-center justify-between mb-4 relative">
+        <div className="mb-6 sm:mb-8 overflow-hidden">
+          <div className="flex items-center justify-between mb-4 relative px-2 sm:px-0">
             {Array.from({ length: totalSteps }, (_, index) => {
               const step = index + 1;
               const isActive = step === currentStep;
@@ -308,7 +308,7 @@ const CreateQuiz = () => {
               return (
                 <div key={step} className="flex flex-col items-center flex-1 relative z-10">
                   <div className={`
-                    flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300
+                    flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full border-2 transition-all duration-300
                     ${isActive 
                       ? 'bg-theme-emerald border-theme-emerald text-white shadow-lg scale-110' 
                       : isCompleted 
@@ -319,16 +319,18 @@ const CreateQuiz = () => {
                     }
                   `}>
                     {isCompleted ? (
-                      <CheckCircle className="w-6 h-6" />
+                      <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 lg:w-6 lg:h-6" />
                     ) : (
-                      getStepIcon(step)
+                      <div className="w-3 h-3 sm:w-4 sm:h-4 lg:w-6 lg:h-6">
+                        {getStepIcon(step)}
+                      </div>
                     )}
                   </div>
-                  <div className="mt-2 text-center max-w-[120px]">
-                    <div className={`text-sm font-medium truncate ${isActive ? 'text-theme-emerald' : isCompleted ? 'text-green-600' : 'text-gray-600'}`}>
-                      Step {step}
+                  <div className="mt-1 sm:mt-2 text-center max-w-[60px] sm:max-w-[100px] lg:max-w-[120px]">
+                    <div className={`text-xs sm:text-sm font-medium truncate ${isActive ? 'text-theme-emerald' : isCompleted ? 'text-green-600' : 'text-gray-600'}`}>
+                      <span className="hidden sm:inline">Step </span>{step}
                     </div>
-                    <div className={`text-xs truncate ${isActive ? 'text-theme-emerald' : 'text-gray-500'}`}>
+                    <div className={`text-xs truncate hidden sm:block ${isActive ? 'text-theme-emerald' : 'text-gray-500'}`}>
                       {getStepTitle(step)}
                     </div>
                   </div>

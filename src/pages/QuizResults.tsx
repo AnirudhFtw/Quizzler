@@ -77,27 +77,27 @@ const QuizResults = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="container mx-auto px-6 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-4xl">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Quiz Results</h1>
-          <p className="text-muted-foreground">Your performance on the {results.quiz_title}</p>
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Quiz Results</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Your performance on the {results.quiz_title}</p>
         </div>
 
         {/* Score Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <Card className="text-center">
-            <CardContent className="p-8">
-              <div className="text-4xl font-bold text-foreground mb-2">
+            <CardContent className="p-4 sm:p-6 lg:p-8">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2">
                 {results.score}
               </div>
-              <p className="text-muted-foreground">Score</p>
+              <p className="text-sm sm:text-base text-muted-foreground">Score</p>
             </CardContent>
           </Card>
           
           <Card className="text-center">
-            <CardContent className="p-8">
-              <div className="text-4xl font-bold text-foreground mb-2">
+            <CardContent className="p-4 sm:p-6 lg:p-8">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-2">
                 {percentage}%
               </div>
               <p className="text-muted-foreground">Percentage</p>
@@ -141,15 +141,18 @@ const QuizResults = () => {
         <Card className="mb-8">
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold text-foreground mb-6">Answer Review</h2>
-            <div className="space-y-4">
+            <div className="space-y-6">
               {Object.entries(results.correct_answers).map(([questionId, correctAnswer], index) => {
                 const userAnswer = results.answers[questionId];
                 const isCorrect = userAnswer === correctAnswer;
                 const wasAnswered = userAnswer !== undefined;
+                const questionData = results.questions[questionId];
+                
+                if (!questionData) return null;
                 
                 return (
-                  <div key={questionId} className="border border-border rounded-lg p-4">
-                    <div className="flex items-start space-x-3">
+                  <div key={questionId} className="border border-border rounded-lg p-6">
+                    <div className="flex items-start space-x-3 mb-4">
                       {!wasAnswered ? (
                         <div className="w-5 h-5 border-2 border-muted-foreground rounded-full mt-0.5 flex-shrink-0" />
                       ) : isCorrect ? (
@@ -158,28 +161,71 @@ const QuizResults = () => {
                         <XCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
                       )}
                       <div className="flex-1">
-                        <p className="font-medium text-foreground mb-2">Question {index + 1}</p>
-                        <div className="text-sm space-y-1">
-                          {wasAnswered ? (
-                            <p className="text-muted-foreground">
-                              Your answer: <span className={isCorrect ? "text-green-600" : "text-red-600"}>
-                                Option {userAnswer?.toUpperCase()}
-                              </span>
-                            </p>
-                          ) : (
-                            <p className="text-muted-foreground">
-                              <span className="text-amber-600">Not answered</span>
-                            </p>
-                          )}
-                          {(!wasAnswered || !isCorrect) && (
-                            <p className="text-muted-foreground">
-                              Correct answer: <span className="text-green-600">
-                                Option {correctAnswer.toUpperCase()}
-                              </span>
-                            </p>
-                          )}
-                        </div>
+                        <h3 className="font-semibold text-foreground mb-3">
+                          Question {index + 1}
+                        </h3>
+                        <p className="text-foreground mb-4 text-base leading-relaxed">
+                          {questionData.question_text}
+                        </p>
                       </div>
+                    </div>
+                    
+                    {/* Options */}
+                    <div className="ml-8 space-y-2">
+                      {['A', 'B', 'C', 'D'].map((optionLetter) => {
+                        const optionKey = `option_${optionLetter.toLowerCase()}` as keyof typeof questionData;
+                        const optionValue = questionData[optionKey];
+                        const isUserAnswer = userAnswer === optionLetter.toLowerCase();
+                        const isCorrectOption = correctAnswer === optionLetter.toLowerCase();
+                        
+                        let optionClass = "p-3 rounded-lg border ";
+                        
+                        if (isCorrectOption) {
+                          optionClass += "bg-green-50 border-green-200 text-green-800";
+                        } else if (isUserAnswer && !isCorrect) {
+                          optionClass += "bg-red-50 border-red-200 text-red-800";
+                        } else {
+                          optionClass += "bg-gray-50 border-gray-200 text-gray-700";
+                        }
+                        
+                        return (
+                          <div key={optionLetter} className={optionClass}>
+                            <div className="flex items-center space-x-2">
+                              <span className="font-medium min-w-[24px]">
+                                {optionLetter}.
+                              </span>
+                              <span>{optionValue}</span>
+                              {isUserAnswer && (
+                                <span className="ml-auto text-sm font-medium">
+                                  Your answer
+                                </span>
+                              )}
+                              {isCorrectOption && (
+                                <span className="ml-auto text-sm font-medium">
+                                  Correct answer
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    
+                    {/* Answer Status */}
+                    <div className="ml-8 mt-4 text-sm">
+                      {!wasAnswered ? (
+                        <p className="text-amber-600 font-medium">
+                          ⚠️ Not answered
+                        </p>
+                      ) : isCorrect ? (
+                        <p className="text-green-600 font-medium">
+                          ✓ Correct answer
+                        </p>
+                      ) : (
+                        <p className="text-red-600 font-medium">
+                          ✗ Incorrect answer
+                        </p>
+                      )}
                     </div>
                   </div>
                 );

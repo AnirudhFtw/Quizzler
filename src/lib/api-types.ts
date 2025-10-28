@@ -129,6 +129,14 @@ export interface QuizResult {
   score: number;
   answers: Record<string, string>;
   correct_answers: Record<string, string>;
+  questions: Record<string, {
+    question_text: string;
+    option_a: string;
+    option_b: string;
+    option_c: string;
+    option_d: string;
+    correct_option: string;
+  }>;
   submitted_at: string;
 }
 

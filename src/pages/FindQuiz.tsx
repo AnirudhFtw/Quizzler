@@ -154,26 +154,26 @@ const FindQuiz = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Find a Quiz</h1>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Find a Quiz</h1>
         </div>
         
         {/* Private Quiz Section */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
+        <div className="mb-8 sm:mb-12">
+          <div className="flex items-center gap-3 mb-4 sm:mb-6">
             <div className="w-8 h-8 bg-theme-emerald rounded-lg flex items-center justify-center">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">Private Quiz</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Private Quiz</h2>
           </div>
           
-          <Card className="mb-6 p-6 bg-gradient-to-r from-gray-50 to-blue-50 border-2 border-gray-200">
-            <p className="text-gray-800 font-semibold mb-4">Enter a quiz ID to access private quizzes shared with you</p>
-            <div className="flex gap-2">
+          <Card className="mb-6 p-4 sm:p-6 bg-gradient-to-r from-gray-50 to-blue-50 border-2 border-gray-200">
+            <p className="text-sm sm:text-base text-gray-800 font-semibold mb-4">Enter a quiz ID to access private quizzes shared with you</p>
+            <div className="flex flex-col sm:flex-row gap-2">
               <Input
                 placeholder="Enter quiz ID..."
                 value={privateQuizId}
@@ -184,12 +184,15 @@ const FindQuiz = () => {
               <Button 
                 onClick={handleFindPrivateQuiz}
                 disabled={privateQuizLoading}
-                className="bg-soft-green hover:bg-soft-green/90"
+                className="bg-soft-green hover:bg-soft-green/90 w-full sm:w-auto"
               >
                 {privateQuizLoading ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                 ) : (
-                  <Search className="w-4 h-4" />
+                  <>
+                    <Search className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Find</span>
+                  </>
                 )}
               </Button>
             </div>
@@ -239,22 +242,22 @@ const FindQuiz = () => {
         </div>
         
         {/* Trivia Quiz Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-6">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center gap-3 mb-4 sm:mb-6">
             <div className="w-8 h-8 bg-theme-emerald rounded-lg flex items-center justify-center">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">Trivia Quiz</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Trivia Quiz</h2>
           </div>
           
-          <p className="text-gray-800 font-semibold mb-6">Explore public trivia quizzes on various topics and difficulty levels</p>
+          <p className="text-sm sm:text-base text-gray-800 font-semibold mb-4 sm:mb-6">Explore public trivia quizzes on various topics and difficulty levels</p>
           
           {/* Filter Options */}
-          <div className="flex flex-wrap gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 mb-4 sm:mb-6">
             <select
-              className="px-3 py-2 border rounded-md bg-background"
+              className="px-3 py-2 border rounded-md bg-background text-sm sm:text-base"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
             >
@@ -264,7 +267,7 @@ const FindQuiz = () => {
             </select>
             
             <select
-              className="px-3 py-2 border rounded-md bg-background"
+              className="px-3 py-2 border rounded-md bg-background text-sm sm:text-base"
               value={selectedDifficulty}
               onChange={(e) => setSelectedDifficulty(e.target.value)}
             >
@@ -276,11 +279,11 @@ const FindQuiz = () => {
           </div>
           
           {/* Topic Tabs */}
-          <div className="flex flex-wrap gap-2 mb-8">
+          <div className="flex flex-wrap gap-1 sm:gap-2 mb-6 sm:mb-8">
             <Button
               variant={selectedTopic === "" ? "default" : "outline"}
               size="sm"
-              className={selectedTopic === "" ? "bg-soft-green hover:bg-soft-green/90" : ""}
+              className={`text-xs sm:text-sm ${selectedTopic === "" ? "bg-soft-green hover:bg-soft-green/90" : ""}`}
               onClick={() => setSelectedTopic("")}
             >
               All Topics
@@ -290,7 +293,7 @@ const FindQuiz = () => {
                 key={topic}
                 variant={selectedTopic === topic ? "default" : "outline"}
                 size="sm"
-                className={selectedTopic === topic ? "bg-soft-green hover:bg-soft-green/90" : ""}
+                className={`text-xs sm:text-sm ${selectedTopic === topic ? "bg-soft-green hover:bg-soft-green/90" : ""}`}
                 onClick={() => setSelectedTopic(topic)}
               >
                 {topic}
@@ -307,21 +310,21 @@ const FindQuiz = () => {
         ) : (
           <>
             {/* Quiz Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {quizzes.map((quiz, index) => (
                 <Card 
                   key={quiz.id} 
                   className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden"
                 >
-                  <div className={`${getQuizColor(index)} h-32 flex items-center justify-center text-4xl`}>
+                  <div className={`${getQuizColor(index)} h-24 sm:h-32 flex items-center justify-center text-2xl sm:text-4xl`}>
                     {getQuizIcon(quiz.topic)}
                   </div>
-                  <CardContent className="p-4">
-                    <div className="space-y-3">
-                      <h3 className="text-lg font-semibold text-foreground">
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="space-y-2 sm:space-y-3">
+                      <h3 className="text-base sm:text-lg font-semibold text-foreground line-clamp-2">
                         {quiz.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
+                      <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
                         {quiz.description}
                       </p>
                       {quiz.topic && (
@@ -332,11 +335,11 @@ const FindQuiz = () => {
                       <div className="flex items-center justify-between">
                         <Badge 
                           variant="secondary" 
-                          className={getDifficultyColor(quiz.difficulty)}
+                          className={`text-xs ${getDifficultyColor(quiz.difficulty)}`}
                         >
                           {quiz.difficulty || 'Medium'}
                         </Badge>
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-xs sm:text-sm text-muted-foreground">
                           {quiz.popularity} played
                         </span>
                       </div>
@@ -344,7 +347,7 @@ const FindQuiz = () => {
                         {quiz.question_count} questions • {quiz.duration}min
                       </div>
                       <Button 
-                        className="w-full bg-soft-green hover:bg-soft-green/90"
+                        className="w-full bg-soft-green hover:bg-soft-green/90 text-sm"
                         onClick={() => handleStartQuiz(quiz.id)}
                       >
                         Start Quiz

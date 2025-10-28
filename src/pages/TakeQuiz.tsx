@@ -212,27 +212,27 @@ const TakeQuiz = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Timer */}
-        <div className="text-center mb-8">
-          <div className="text-4xl font-mono font-bold text-foreground">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-mono font-bold text-foreground">
             {formatTime(timeLeft)}
           </div>
         </div>
 
         {/* Question Card */}
-        <Card className="max-w-2xl mx-auto mb-8">
-          <CardContent className="p-8">
-            <div className="mb-6">
-              <div className="text-sm text-muted-foreground mb-4">
+        <Card className="max-w-2xl mx-auto mb-6 sm:mb-8">
+          <CardContent className="p-4 sm:p-6 lg:p-8">
+            <div className="mb-4 sm:mb-6">
+              <div className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
                 Question {currentQuestion + 1} of {quiz.questions.length}
               </div>
-              <h2 className="text-xl font-semibold text-foreground mb-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-4 sm:mb-6 leading-relaxed">
                 {quiz.questions[currentQuestion].question_text}
               </h2>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {[
                 { key: 'a', text: quiz.questions[currentQuestion].option_a },
                 { key: 'b', text: quiz.questions[currentQuestion].option_b },
@@ -245,14 +245,14 @@ const TakeQuiz = () => {
                   <button
                     key={option.key}
                     onClick={() => handleOptionClick(option.key as 'a' | 'b' | 'c' | 'd')}
-                    className={`w-full p-4 text-left border rounded-lg transition-colors ${
+                    className={`w-full p-3 sm:p-4 text-left border rounded-lg transition-colors text-sm sm:text-base ${
                       isSelected 
                         ? 'border-primary bg-primary/10 text-foreground' 
                         : 'border-border hover:bg-muted/50'
                     }`}
                   >
-                    <span className="mr-3 text-muted-foreground">{option.key.toUpperCase()}.</span>
-                    {option.text}
+                    <span className="mr-2 sm:mr-3 text-muted-foreground font-medium">{option.key.toUpperCase()}.</span>
+                    <span className="leading-relaxed">{option.text}</span>
                   </button>
                 );
               })}

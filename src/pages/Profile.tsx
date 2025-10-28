@@ -107,16 +107,16 @@ const Profile = () => {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       
-      <main className="container mx-auto px-6 py-8 max-w-6xl">
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-6xl">
         {/* Profile Header - Centered */}
-        <div className="flex flex-col items-center text-center mb-12">
-          <Avatar className="w-24 h-24 ring-4 ring-theme-emerald/30 mb-4">
-            <AvatarFallback className="text-2xl bg-gradient-to-br from-theme-emerald to-theme-emerald-dark text-white">
+        <div className="flex flex-col items-center text-center mb-8 sm:mb-12">
+          <Avatar className="w-20 h-20 sm:w-24 sm:h-24 ring-4 ring-theme-emerald/30 mb-4">
+            <AvatarFallback className="text-xl sm:text-2xl bg-gradient-to-br from-theme-emerald to-theme-emerald-dark text-white">
               {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
             </AvatarFallback>
           </Avatar>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{user?.name || 'User'}</h1>
-          <p className="text-gray-800 font-semibold mb-1 text-lg">{user?.email}</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{user?.name || 'User'}</h1>
+          <p className="text-base sm:text-lg text-gray-800 font-semibold mb-1">{user?.email}</p>
           <p className="text-gray-700 font-medium text-sm">
             Joined {user?.created_at ? new Date(user.created_at).getFullYear() : 'Recently'}
           </p>
@@ -124,17 +124,17 @@ const Profile = () => {
 
         {/* Stats Overview - Symmetric Grid */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
             <Card className="bg-white border-gray-200 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-6 text-center">
-                <div className="text-3xl font-bold text-theme-navy mb-2">
+              <CardContent className="p-4 sm:p-6 text-center">
+                <div className="text-2xl sm:text-3xl font-bold text-theme-navy mb-2">
                   {stats.total_quizzes_attempted}
                 </div>
-                <p className="text-gray-800 font-semibold text-sm">Total Quizzes</p>
+                <p className="text-gray-800 font-semibold text-xs sm:text-sm">Total Quizzes</p>
               </CardContent>
             </Card>
             <Card className="bg-white border-gray-200 shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-6 text-center">
+              <CardContent className="p-4 sm:p-6 text-center">
                 <div className="text-3xl font-bold text-theme-emerald mb-2">
                   {Math.round(stats.trivia_stats.average_score)}
                 </div>
@@ -379,19 +379,19 @@ const Profile = () => {
           </TabsContent>
 
           <TabsContent value="activity">
-            <Card className="bg-slate-800 border-slate-700">
+            <Card className="bg-white border-gray-200 shadow-lg">
               <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Recent Quiz Activity</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Quiz Activity</h3>
                 {profile && profile.quiz_history && profile.quiz_history.length > 0 ? (
                   <div className="space-y-4">
                     {profile.quiz_history.slice(0, 10).map((quiz, index) => (
-                      <div key={index} className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
+                      <div key={index} className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
                         <div className="flex-1">
-                          <h4 className="text-white font-medium">{quiz.quiz_title}</h4>
-                          <div className="flex items-center gap-4 text-sm text-slate-400 mt-1">
-                            <span>{quiz.is_trivia ? 'Trivia' : 'Private'}</span>
+                          <h4 className="text-gray-900 font-semibold">{quiz.quiz_title}</h4>
+                          <div className="flex items-center gap-4 text-sm text-gray-700 mt-1 font-medium">
+                            <span className="text-theme-emerald font-semibold">{quiz.is_trivia ? 'Trivia' : 'Private'}</span>
                             {quiz.topic && <span>• {quiz.topic}</span>}
-                            {quiz.difficulty && <span>• {quiz.difficulty}</span>}
+                            {quiz.difficulty && <span>• <span className="capitalize">{quiz.difficulty}</span></span>}
                             <span>• {new Date(quiz.submitted_at).toLocaleDateString()}</span>
                           </div>
                         </div>

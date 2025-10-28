@@ -41,15 +41,15 @@ const Leaderboard = () => {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       
-      <main className="container mx-auto px-6 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Global Leaderboard</h1>
-          <p className="text-gray-800 font-semibold">Top performers in trivia quizzes worldwide</p>
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Global Leaderboard</h1>
+          <p className="text-sm sm:text-base text-gray-800 font-semibold">Top performers in trivia quizzes worldwide</p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 text-center">Global Trivia Leaderboard</h2>
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-6 sm:mb-8">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 text-center">Global Trivia Leaderboard</h2>
           </div>
           
           <Card className="bg-white border-gray-200 shadow-lg">
@@ -60,36 +60,47 @@ const Leaderboard = () => {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[640px]">
                     <thead className="border-b border-gray-200">
                       <tr className="text-left">
-                        <th className="px-6 py-4 font-bold text-gray-800">Rank</th>
-                        <th className="px-6 py-4 font-bold text-gray-800">User</th>
-                        <th className="px-6 py-4 font-bold text-gray-800">Avg Rating</th>
-                        <th className="px-6 py-4 font-bold text-gray-800">Quizzes Completed</th>
-                        <th className="px-6 py-4 font-bold text-gray-800">Best Quiz</th>
+                        <th className="px-3 sm:px-6 py-3 sm:py-4 font-bold text-gray-800 text-sm sm:text-base">Rank</th>
+                        <th className="px-3 sm:px-6 py-3 sm:py-4 font-bold text-gray-800 text-sm sm:text-base">User</th>
+                        <th className="px-3 sm:px-6 py-3 sm:py-4 font-bold text-gray-800 text-sm sm:text-base">Avg Rating</th>
+                        <th className="px-3 sm:px-6 py-3 sm:py-4 font-bold text-gray-800 text-sm sm:text-base hidden sm:table-cell">Quizzes</th>
+                        <th className="px-3 sm:px-6 py-3 sm:py-4 font-bold text-gray-800 text-sm sm:text-base hidden md:table-cell">Best Quiz</th>
                       </tr>
                     </thead>
                     <tbody>
                       {leaderboardData.map((user, index) => (
                         <tr key={user.user_id} className="border-b border-gray-100 hover:bg-gray-50">
-                          <td className="px-6 py-4">
+                          <td className="px-3 sm:px-6 py-3 sm:py-4">
                             <div className="flex items-center gap-2">
                               {getRankIcon(index + 1)}
                             </div>
                           </td>
-                          <td className="px-6 py-4 font-bold text-gray-900">{user.user_name}</td>
-                          <td className="px-6 py-4">
-                            <Badge variant="secondary" className="bg-theme-emerald text-white font-bold">
+                          <td className="px-3 sm:px-6 py-3 sm:py-4">
+                            <div className="font-bold text-gray-900 text-sm sm:text-base truncate max-w-[120px] sm:max-w-none">
+                              {user.user_name}
+                            </div>
+                            <div className="text-xs text-gray-600 sm:hidden">
+                              {user.quiz_count} quizzes
+                            </div>
+                          </td>
+                          <td className="px-3 sm:px-6 py-3 sm:py-4">
+                            <Badge variant="secondary" className="bg-theme-emerald text-white font-bold text-xs sm:text-sm">
                               {Math.round(user.average_rating)}
                             </Badge>
                           </td>
-                          <td className="px-6 py-4 text-gray-800 font-semibold">{user.quiz_count}</td>
-                          <td className="px-6 py-4 text-gray-800 font-semibold text-sm">
-                            {user.best_quiz || 'N/A'}
-                            {user.best_score > 0 && (
-                              <span className="text-theme-emerald font-bold ml-2">({user.best_score})</span>
-                            )}
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-800 font-semibold text-sm sm:text-base hidden sm:table-cell">
+                            {user.quiz_count}
+                          </td>
+                          <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-800 font-semibold text-xs sm:text-sm hidden md:table-cell">
+                            <div className="truncate max-w-[150px]">
+                              {user.best_quiz || 'N/A'}
+                              {user.best_score > 0 && (
+                                <span className="text-theme-emerald font-bold ml-2">({user.best_score})</span>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))}
