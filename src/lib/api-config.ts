@@ -23,9 +23,36 @@ const isProduction = isProductionDomain || isProductionBuild;
 
 // FORCE HTTPS for production - NO HTTP ALLOWED
 export const API_BASE_URL = (() => {
-  if (DIRECT_BASE_URL) return DIRECT_BASE_URL;
-  if (isProduction) return 'https://quizzler-backend.adityatorgal.me';
-  return API_BASE_URL_DEV;
+  let url;
+  if (DIRECT_BASE_URL) {
+    url = DIRECT_BASE_URL;
+  } else if (isProduction) {
+    url = 'https://quizzler-backend.adityatorgal.me';
+  } else {
+    url = API_BASE_URL_DEV;
+  }
+  
+  // SAFETY CHECK: Force HTTPS in production, never allow HTTP
+  if (isProduction && url.startsWith('http://')) {
+    console.warn('🚨 Forcing HTTP to HTTPS in production!');
+    url = url.replace('http://', 'https://');
+  }
+  
+  // Remove trailing slash to avoid redirect issues
+  url = url.replace(/\/$/, '');
+  
+  // DEBUGGING: Log the final API base URL
+  console.log('🔧 API Configuration:', {
+    isProduction,
+    DIRECT_BASE_URL,
+    API_BASE_URL_DEV,
+    API_BASE_URL_PROD,
+    finalUrl: url,
+    hostname: window?.location?.hostname,
+    protocol: window?.location?.protocol
+  });
+  
+  return url;
 })();
 
 // WebSocket URL with same logic
@@ -47,8 +74,8 @@ export const API_ENDPOINTS = {
   
   // Quizzes
   QUIZZES: {
-    CREATE: '/quizzes',
-    GET_MY_QUIZZES: '/quizzes',
+    CREATE: '/quizzes/',
+    GET_MY_QUIZZES: '/quizzes/',
     GET_TRIVIA: '/quizzes/trivia',
     GET_QUIZ: (quizId: string) => `/quizzes/${quizId}`,
     GET_TOPICS: '/quizzes/topics/list'

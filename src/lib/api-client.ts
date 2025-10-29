@@ -112,6 +112,16 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
+    
+    // DEBUGGING: Log the exact URL being called
+    console.log('🌐 API Request:', {
+      method: options.method || 'GET',
+      url,
+      baseUrl: this.baseUrl,
+      endpoint,
+      timestamp: new Date().toISOString()
+    });
+    
     const config: RequestInit = {
       ...options,
       credentials: 'include',
@@ -124,6 +134,15 @@ class ApiClient {
 
     try {
       const response = await fetch(url, config);
+      
+      // DEBUGGING: Log response details
+      console.log('📡 API Response:', {
+        status: response.status,
+        url: response.url, // This shows the final URL after redirects
+        redirected: response.redirected,
+        method: options.method || 'GET'
+      });
+      
       return this.handleResponse<T>(response);
     } catch (error) {
       console.error('API request failed:', { url, error });
