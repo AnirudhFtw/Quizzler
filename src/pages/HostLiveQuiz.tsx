@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { getAuthToken } from '../lib/api-config';
+import { getAuthToken, WS_BASE_URL } from '../lib/api-config';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -64,7 +64,7 @@ const HostLiveQuiz: React.FC = () => {
   const connectWebSocket = () => {
     if (!token) return;
 
-    const wsUrl = `wss://quizzler-backend.adityatorgal.me/realtime/ws/host/${roomCode || 'new'}?token=${encodeURIComponent(`Bearer ${token}`)}`;
+    const wsUrl = `${WS_BASE_URL}/realtime/ws/host/${roomCode || 'new'}?token=${encodeURIComponent(`Bearer ${token}`)}`;
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {

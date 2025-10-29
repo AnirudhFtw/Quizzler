@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL, WS_BASE_URL } from '@/lib/api-config';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -113,7 +114,7 @@ const JoinLiveQuiz: React.FC = () => {
     
     try {
       // First validate if room exists
-      const response = await fetch(`https://quizzler-backend.adityatorgal.me/realtime/rooms/validate/${roomCode.toUpperCase()}`);
+      const response = await fetch(`${API_BASE_URL}/realtime/rooms/validate/${roomCode.toUpperCase()}`);
       const validation = await response.json();
       
       if (!validation.valid) {
@@ -122,7 +123,7 @@ const JoinLiveQuiz: React.FC = () => {
       }
 
       // Connect to WebSocket
-      const wsUrl = `wss://quizzler-backend.adityatorgal.me/realtime/ws/player/${roomCode.toUpperCase()}?username=${encodeURIComponent(username.trim())}`;
+      const wsUrl = `${WS_BASE_URL}/realtime/ws/player/${roomCode.toUpperCase()}?username=${encodeURIComponent(username.trim())}`;
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {

@@ -3,16 +3,36 @@
  * Handles environment-based backend URL selection and API client setup
  */
 
-// Get environment variables
-const NODE_ENV = import.meta.env.VITE_NODE_ENV || 'development';
+// Get environment variables with multiple fallbacks
+const NODE_ENV = import.meta.env.VITE_NODE_ENV || import.meta.env.MODE || 'development';
 const API_BASE_URL_DEV = import.meta.env.VITE_API_BASE_URL_DEV || 'http://localhost:8000';
-const API_BASE_URL_PROD = import.meta.env.VITE_API_BASE_URL_PROD || 'https://your-production-backend-url.com';
+const API_BASE_URL_PROD = import.meta.env.VITE_API_BASE_URL_PROD || 'https://quizzler-backend.adityatorgal.me';
+const WS_BASE_URL_DEV = import.meta.env.VITE_WS_BASE_URL_DEV || 'ws://localhost:8000';
+const WS_BASE_URL_PROD = import.meta.env.VITE_WS_BASE_URL_PROD || 'wss://quizzler-backend.adityatorgal.me';
 
 // Direct override if provided
 const DIRECT_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// Determine the base URL based on environment
-export const API_BASE_URL = DIRECT_BASE_URL || (NODE_ENV === 'production' ? API_BASE_URL_PROD : API_BASE_URL_DEV);
+// Detect production environment with multiple checks
+const isProductionDomain = typeof window !== 'undefined' && 
+  (window.location.hostname === 'quizzler.adityatorgal.me' || 
+   window.location.hostname.includes('quizzler.adityatorgal.me'));
+
+const isProductionBuild = import.meta.env.PROD || NODE_ENV === 'production';
+const isProduction = isProductionDomain || isProductionBuild;
+
+// FORCE HTTPS for production - NO HTTP ALLOWED
+export const API_BASE_URL = (() => {
+  if (DIRECT_BASE_URL) return DIRECT_BASE_URL;
+  if (isProduction) return 'https://quizzler-backend.adityatorgal.me';
+  return API_BASE_URL_DEV;
+})();
+
+// WebSocket URL with same logic
+export const WS_BASE_URL = (() => {
+  if (isProduction) return 'wss://quizzler-backend.adityatorgal.me';
+  return WS_BASE_URL_DEV;
+})();
 
 // API endpoints
 export const API_ENDPOINTS = {
@@ -91,8 +111,19 @@ export const isAuthenticated = (): boolean => {
   return !!getAuthToken();
 };
 
-console.log('API Configuration:', {
+console.log('🔧 API Configuration Debug:', {
   NODE_ENV,
-  API_BASE_URL,
+  MODE: import.meta.env.MODE,
+  PROD: import.meta.env.PROD,
+  VITE_NODE_ENV: import.meta.env.VITE_NODE_ENV,
+  DIRECT_BASE_URL,
+  API_BASE_URL_PROD,
+  API_BASE_URL_DEV,
+  isProductionDomain,
+  isProductionBuild,
+  isProduction,
+  hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
+  FINAL_API_BASE_URL: API_BASE_URL,
+  FINAL_WS_BASE_URL: WS_BASE_URL,
   isAuthenticated: isAuthenticated()
 });
