@@ -113,7 +113,7 @@ const JoinLiveQuiz: React.FC = () => {
     
     try {
       // First validate if room exists
-      const response = await fetch(`http://localhost:8000/realtime/rooms/validate/${roomCode.toUpperCase()}`);
+      const response = await fetch(`https://quizzler-backend.adityatorgal.me/realtime/rooms/validate/${roomCode.toUpperCase()}`);
       const validation = await response.json();
       
       if (!validation.valid) {
@@ -122,7 +122,7 @@ const JoinLiveQuiz: React.FC = () => {
       }
 
       // Connect to WebSocket
-      const wsUrl = `ws://localhost:8000/realtime/ws/player/${roomCode.toUpperCase()}?username=${encodeURIComponent(username.trim())}`;
+      const wsUrl = `wss://quizzler-backend.adityatorgal.me/realtime/ws/player/${roomCode.toUpperCase()}?username=${encodeURIComponent(username.trim())}`;
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {

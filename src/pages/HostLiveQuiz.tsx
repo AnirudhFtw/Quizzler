@@ -64,7 +64,7 @@ const HostLiveQuiz: React.FC = () => {
   const connectWebSocket = () => {
     if (!token) return;
 
-    const wsUrl = `ws://localhost:8000/realtime/ws/host/${roomCode || 'new'}?token=${encodeURIComponent(`Bearer ${token}`)}`;
+    const wsUrl = `wss://quizzler-backend.adityatorgal.me/realtime/ws/host/${roomCode || 'new'}?token=${encodeURIComponent(`Bearer ${token}`)}`;
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
