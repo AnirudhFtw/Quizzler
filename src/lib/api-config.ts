@@ -85,8 +85,8 @@ export const API_ENDPOINTS = {
   
   // Quizzes
   QUIZZES: {
-    CREATE: '/quizzes',
-    GET_MY_QUIZZES: '/quizzes',
+    CREATE: '/quizzes/',
+    GET_MY_QUIZZES: '/quizzes/',
     GET_TRIVIA: '/quizzes/trivia',
     GET_QUIZ: (quizId: string) => `/quizzes/${quizId}`,
     GET_TOPICS: '/quizzes/topics/list'
