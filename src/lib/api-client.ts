@@ -114,6 +114,8 @@ class ApiClient {
     const url = `${this.baseUrl}${endpoint}`;
     const config: RequestInit = {
       ...options,
+      credentials: 'include',
+      mode: 'cors',
       headers: {
         ...getAuthHeaders(),
         ...options.headers,
@@ -260,6 +262,8 @@ class ApiClient {
     const config: RequestInit = {
       method: 'POST',
       body: formData,
+      credentials: 'include',
+      mode: 'cors',
       headers: {
         ...getAuthHeaders(),
         // Don't set Content-Type for FormData, let browser set it with boundary

@@ -1,11 +1,6 @@
 /**
  * API Configuration
- * Handles environm  RESULTS: {
-    MY_RESULT: (quizId: string) => `/results/${quizId}/my-result`,
-    QUIZ_RESULTS: (quizId: string) => `/results/${quizId}/results`,
-    GLOBAL_LEADERBOARD: '/results/leaderboards/global',
-    USER_STATS: '/results/stats/user',
-  },ed backend URL selection and API client setup
+ * Handles environment-based backend URL selection and API client setup
  */
 
 // Get environment variables
