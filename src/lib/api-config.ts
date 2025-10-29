@@ -3,7 +3,7 @@
  * Handles environment-based backend URL selection and API client setup
  */
 
-// Get environment variables with multiple fallbacks
+// Environment Detection - VITE_NODE_ENV takes priority
 const NODE_ENV = import.meta.env.VITE_NODE_ENV || import.meta.env.MODE || 'development';
 const API_BASE_URL_DEV = import.meta.env.VITE_API_BASE_URL_DEV || 'http://localhost:8000';
 const API_BASE_URL_PROD = import.meta.env.VITE_API_BASE_URL_PROD || 'https://quizzler-backend.adityatorgal.me';
@@ -13,43 +13,54 @@ const WS_BASE_URL_PROD = import.meta.env.VITE_WS_BASE_URL_PROD || 'wss://quizzle
 // Direct override if provided
 const DIRECT_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// Detect production environment with multiple checks
-const isProductionDomain = typeof window !== 'undefined' && 
-  (window.location.hostname === 'quizzler.adityatorgal.me' || 
-   window.location.hostname.includes('quizzler.adityatorgal.me'));
+// Environment Detection Logic
+const isProduction = (() => {
+  // 1. VITE_NODE_ENV takes highest priority
+  if (NODE_ENV === 'production') return true;
+  if (NODE_ENV === 'development') return false;
+  
+  // 2. Check if running on production domain
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (hostname === 'quizzler.adityatorgal.me' || hostname.includes('quizzler.adityatorgal.me')) {
+      return true;
+    }
+  }
+  
+  // 3. Fall back to Vite's build mode
+  return import.meta.env.PROD;
+})();
 
-const isProductionBuild = import.meta.env.PROD || NODE_ENV === 'production';
-const isProduction = isProductionDomain || isProductionBuild;
-
-// FORCE HTTPS for production - NO HTTP ALLOWED
+// API Base URL Selection
 export const API_BASE_URL = (() => {
   let url;
+  
+  // Priority 1: Direct override
   if (DIRECT_BASE_URL) {
     url = DIRECT_BASE_URL;
-  } else if (isProduction) {
-    url = 'https://quizzler-backend.adityatorgal.me';
+  }
+  // Priority 2: Environment-based selection
+  else if (isProduction) {
+    url = API_BASE_URL_PROD;
   } else {
     url = API_BASE_URL_DEV;
   }
   
-  // SAFETY CHECK: Force HTTPS in production, never allow HTTP
+  // Safety check: Force HTTPS in production
   if (isProduction && url.startsWith('http://')) {
     console.warn('🚨 Forcing HTTP to HTTPS in production!');
     url = url.replace('http://', 'https://');
   }
   
-  // Remove trailing slash to avoid redirect issues
+  // Remove trailing slash for consistency
   url = url.replace(/\/$/, '');
   
-  // DEBUGGING: Log the final API base URL
-  console.log('🔧 API Configuration:', {
+  // Debug logging
+  console.log('🔧 API Base URL Selected:', {
+    NODE_ENV,
     isProduction,
-    DIRECT_BASE_URL,
-    API_BASE_URL_DEV,
-    API_BASE_URL_PROD,
-    finalUrl: url,
-    hostname: window?.location?.hostname,
-    protocol: window?.location?.protocol
+    selectedUrl: url,
+    source: DIRECT_BASE_URL ? 'DIRECT_BASE_URL' : (isProduction ? 'PROD' : 'DEV')
   });
   
   return url;
@@ -146,8 +157,6 @@ console.log('🔧 API Configuration Debug:', {
   DIRECT_BASE_URL,
   API_BASE_URL_PROD,
   API_BASE_URL_DEV,
-  isProductionDomain,
-  isProductionBuild,
   isProduction,
   hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
   FINAL_API_BASE_URL: API_BASE_URL,
