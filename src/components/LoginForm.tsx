@@ -41,12 +41,12 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 lg:p-8">
+      <div className="text-center mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
           Welcome to Quizzler
         </h1>
-        <p className="text-gray-800 font-semibold">
+        <p className="text-sm sm:text-base text-gray-800 font-semibold">
           Sign in to continue your learning journey
         </p>
       </div>

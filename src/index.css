@@ -111,11 +111,15 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground font-medium;
+    /* Prevent zoom on input focus on iOS */
+    -webkit-text-size-adjust: 100%;
   }
   
   /* Make all text darker and bolder */
   h1, h2, h3, h4, h5, h6 {
     @apply text-gray-900 font-bold;
+    /* Prevent text from shrinking on mobile */
+    -webkit-text-size-adjust: none;
   }
   
   p, span, div, label, li, td, th {
@@ -124,6 +128,97 @@ All colors MUST be HSL.
   
   .text-muted-foreground {
     @apply text-gray-700 font-medium !important;
+  }
+  
+  /* Improve touch interactions */
+  button, a, [role="button"] {
+    @apply mobile-touch;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Better input handling on mobile */
+  input, textarea, select {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Fix viewport issues */
+  .mobile-viewport {
+    width: 100vw;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+/* Mobile-specific styles */
+@layer utilities {
+  .mobile-safe {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+  }
+  
+  .mobile-card {
+    @apply w-full min-w-0; /* Prevent overflow on mobile */
+  }
+  
+  .mobile-text {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+  
+  .mobile-heading {
+    @apply text-lg sm:text-xl lg:text-2xl xl:text-3xl;
+  }
+  
+  .mobile-button {
+    @apply w-full sm:w-auto px-4 py-2 text-sm sm:text-base;
+  }
+  
+  /* Prevent horizontal scroll on mobile */
+  .mobile-container {
+    @apply w-full max-w-full overflow-x-hidden;
+  }
+  
+  /* Touch-friendly clickable areas */
+  .mobile-touch {
+    @apply min-h-[44px] min-w-[44px]; /* Apple's recommended touch target size */
+  }
+  
+  /* Responsive table */
+  .mobile-table {
+    @apply block sm:table overflow-x-auto;
+  }
+  
+  .mobile-table-row {
+    @apply block sm:table-row border-b sm:border-b-0;
+  }
+  
+  .mobile-table-cell {
+    @apply block sm:table-cell py-2 sm:py-1 px-0 sm:px-3 text-left;
+  }
+  
+  /* Mobile-friendly forms */
+  .mobile-form {
+    @apply space-y-4 sm:space-y-6;
+  }
+  
+  .mobile-form-group {
+    @apply space-y-2 sm:space-y-3;
+  }
+  
+  /* Responsive spacing */
+  .mobile-section {
+    @apply py-8 sm:py-12 lg:py-16;
+  }
+  
+  .mobile-content {
+    @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
   }
 }
 

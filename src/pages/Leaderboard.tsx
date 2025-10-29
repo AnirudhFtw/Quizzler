@@ -59,8 +59,8 @@ const Leaderboard = () => {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-theme-emerald"></div>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[640px]">
+                <div className="overflow-x-auto mobile-container">
+                  <table className="mobile-table w-full min-w-[640px]">
                     <thead className="border-b border-gray-200">
                       <tr className="text-left">
                         <th className="px-3 sm:px-6 py-3 sm:py-4 font-bold text-gray-800 text-sm sm:text-base">Rank</th>

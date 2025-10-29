@@ -27,7 +27,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="bg-white">
+    <div className="bg-white mobile-viewport">
       <Navigation />
       
       <main className="flex items-center justify-center h-screen px-4 sm:px-6 py-8 sm:py-12">
