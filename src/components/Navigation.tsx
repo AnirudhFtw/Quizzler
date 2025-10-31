@@ -26,13 +26,13 @@ const Navigation = () => {
   };
   
   return (
-    <nav className="w-full px-4 sm:px-6 py-4 backdrop-blur-sm border-b bg-theme-navy/95 border-theme-navy/30 shadow-lg relative">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
+    <nav className="navbar-container">
+      <div className="navbar-content">
+        <div className="flex items-center space-x-3 shrink-0">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-theme-emerald to-theme-emerald-dark flex items-center justify-center shadow-lg">
             <div className="w-4 h-4 rounded bg-white/90"></div>
           </div>
-          <span className="text-xl font-bold text-white tracking-tight">Quizzler</span>
+          <span className="text-xl font-bold text-white tracking-tight flex items-center h-10">Quizzler</span>
         </div>
         
         {/* Desktop Navigation */}
@@ -66,20 +66,20 @@ const Navigation = () => {
             </a>
           </div>
         ) : isAuthenticated ? (
-          <div className="hidden md:flex items-center space-x-6">
-            <a href="/dashboard" className="text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium">
+          <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
+            <a href="/dashboard" className="text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium flex items-center h-10">
               Home
             </a>
-            <a href="/profile" className="text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium">
+            <a href="/profile" className="text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium flex items-center h-10">
               My Profile
             </a>
-            <div className="flex items-center space-x-4 pl-4 border-l border-white/20">
-              <span className="hidden lg:block text-sm text-white/70 font-medium">
+            <div className="flex items-center space-x-3 pl-3 md:pl-4 border-l border-white/20">
+              <span className="hidden lg:flex items-center text-sm text-white/70 font-medium truncate max-w-[120px] xl:max-w-[160px] h-10">
                 Hi, {user?.name}
               </span>
               <button 
                 onClick={handleLogout}
-                className="px-4 py-2 text-sm font-medium text-white bg-theme-emerald hover:bg-theme-emerald-dark rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                className="px-3 py-2 text-sm font-medium text-white bg-theme-emerald hover:bg-theme-emerald-dark rounded-lg transition-all duration-200 shadow-md hover:shadow-lg whitespace-nowrap h-10 flex items-center"
               >
                 Logout
               </button>
@@ -91,7 +91,7 @@ const Navigation = () => {
         {(isAboutPage || isAuthPage || isAuthenticated) && (
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-white hover:text-theme-emerald transition-colors"
+            className="hamburger-button"
             aria-label="Toggle mobile menu"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -101,12 +101,12 @@ const Navigation = () => {
 
       {/* Mobile Navigation Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-theme-navy/95 backdrop-blur-sm border-b border-theme-navy/30 shadow-lg z-50">
-          <div className="px-4 py-4 space-y-4">
+        <div className="mobile-menu">
+          <div className="mobile-menu-content">
             {isAboutPage ? (
               <a 
                 href="/contact" 
-                className="block text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium py-2"
+                className="mobile-menu-item"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contact
@@ -120,7 +120,7 @@ const Navigation = () => {
                     document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
                     setIsMobileMenuOpen(false);
                   }}
-                  className="block text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium cursor-pointer py-2"
+                  className="mobile-menu-item cursor-pointer"
                 >
                   About
                 </a>
@@ -131,7 +131,7 @@ const Navigation = () => {
                     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
                     setIsMobileMenuOpen(false);
                   }}
-                  className="block text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium cursor-pointer py-2"
+                  className="mobile-menu-item cursor-pointer"
                 >
                   Contact
                 </a>
@@ -140,20 +140,20 @@ const Navigation = () => {
               <>
                 <a 
                   href="/dashboard" 
-                  className="block text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium py-2"
+                  className="mobile-menu-item"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Home
                 </a>
                 <a 
                   href="/profile" 
-                  className="block text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium py-2"
+                  className="mobile-menu-item"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   My Profile
                 </a>
-                <div className="border-t border-white/20 pt-4 mt-4">
-                  <p className="text-sm text-white/70 font-medium mb-3">
+                <div className="mobile-menu-divider">
+                  <p className="mobile-menu-user">
                     Hi, {user?.name}
                   </p>
                   <button 
@@ -161,7 +161,7 @@ const Navigation = () => {
                       handleLogout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full text-left px-4 py-2 text-sm font-medium text-white bg-theme-emerald hover:bg-theme-emerald-dark rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                    className="mobile-menu-button"
                   >
                     Logout
                   </button>

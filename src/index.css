@@ -44,51 +44,35 @@ All colors MUST be HSL.
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
     --background: 215 28% 8%;
     --foreground: 0 0% 98%;
-
     --card: 215 28% 10%;
     --card-foreground: 0 0% 98%;
-
     --popover: 215 28% 10%;
     --popover-foreground: 0 0% 98%;
-
     --primary: 0 0% 98%;
     --primary-foreground: 215 28% 17%;
-
     --secondary: 215 28% 15%;
     --secondary-foreground: 0 0% 98%;
-
     --muted: 215 28% 15%;
     --muted-foreground: 217 11% 65%;
-
     --accent: 158 64% 52%;
     --accent-foreground: 215 28% 17%;
-
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 215 28% 15%;
     --input: 215 28% 15%;
     --ring: 158 64% 52%;
-
     --sage: 158 64% 52%;
     --sage-light: 158 20% 25%;
     --warm-beige: 215 28% 12%;
@@ -113,6 +97,17 @@ All colors MUST be HSL.
     @apply bg-background text-foreground font-medium;
     /* Prevent zoom on input focus on iOS */
     -webkit-text-size-adjust: 100%;
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    width: 100%;
+  }
+  
+  html {
+    /* Prevent horizontal scroll at root level */
+    overflow-x: hidden;
+    width: 100%;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
   }
   
   /* Make all text darker and bolder */
@@ -141,31 +136,27 @@ All colors MUST be HSL.
     font-size: 16px; /* Prevent zoom on iOS */
   }
   
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  /* Fix viewport issues */
-  .mobile-viewport {
-    width: 100vw;
-    max-width: 100%;
+  /* Root container fix */
+  #root {
+    width: 100%;
+    min-height: 100vh;
     overflow-x: hidden;
   }
 }
 
-/* Mobile-specific styles */
+/* Mobile-responsive utilities and fixes */
 @layer utilities {
+  /* Container and layout utilities */
   .mobile-safe {
-    @apply px-4 sm:px-6 lg:px-8;
+    @apply px-3 sm:px-4 md:px-6 lg:px-8;
   }
   
   .mobile-grid {
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6;
   }
   
   .mobile-card {
-    @apply w-full min-w-0; /* Prevent overflow on mobile */
+    @apply w-full min-w-0 max-w-full; /* Prevent overflow on mobile */
   }
   
   .mobile-text {
@@ -177,7 +168,7 @@ All colors MUST be HSL.
   }
   
   .mobile-button {
-    @apply w-full sm:w-auto px-4 py-2 text-sm sm:text-base;
+    @apply w-full sm:w-auto px-4 py-2 text-sm sm:text-base min-h-[44px];
   }
   
   /* Prevent horizontal scroll on mobile */
@@ -188,6 +179,141 @@ All colors MUST be HSL.
   /* Touch-friendly clickable areas */
   .mobile-touch {
     @apply min-h-[44px] min-w-[44px]; /* Apple's recommended touch target size */
+  }
+  
+  /* Responsive navigation fixes */
+  .navbar-desktop {
+    @apply hidden md:flex items-center space-x-6;
+  }
+  
+  .navbar-mobile {
+    @apply md:hidden;
+  }
+  
+  .navbar-user-section {
+    @apply flex items-center space-x-3 md:space-x-4;
+  }
+  
+  .navbar-user-info {
+    @apply hidden lg:block text-sm text-white/70 font-medium whitespace-nowrap;
+  }
+  
+  /* Step progress utilities for create-quiz */
+  .step-container {
+    @apply flex items-center justify-between mb-4 relative px-1 sm:px-2;
+  }
+  
+  .step-circle {
+    @apply flex items-center justify-center rounded-full border-2 transition-all duration-300 relative shrink-0;
+    /* Fixed responsive sizes */
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  @screen sm {
+    .step-circle {
+      width: 3rem;
+      height: 3rem;
+    }
+  }
+  
+  @screen lg {
+    .step-circle {
+      width: 3.5rem;
+      height: 3.5rem;
+    }
+  }
+  
+  .step-icon {
+    @apply flex items-center justify-center shrink-0;
+    /* Fixed icon sizes to fit properly in circles */
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  @screen sm {
+    .step-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+  
+  @screen lg {
+    .step-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+  
+  .step-icon svg {
+    @apply w-full h-full shrink-0;
+    /* Ensure SVGs don't overflow */
+    max-width: 100%;
+    max-height: 100%;
+  }
+  
+  .step-text {
+    @apply mt-1 sm:mt-2 text-center px-1;
+    max-width: 4rem;
+  }
+  
+  @screen sm {
+    .step-text {
+      max-width: 6rem;
+    }
+  }
+  
+  @screen lg {
+    .step-text {
+      max-width: 8rem;
+    }
+  }
+  
+  .step-progress-line {
+    @apply absolute h-0.5 bg-gray-300 z-0;
+    top: 50%;
+    left: 1.25rem;
+    right: 1.25rem;
+    transform: translateY(-50%);
+  }
+  
+  @screen sm {
+    .step-progress-line {
+      left: 1.5rem;
+      right: 1.5rem;
+    }
+  }
+  
+  @screen lg {
+    .step-progress-line {
+      left: 1.75rem;
+      right: 1.75rem;
+    }
+  }
+  
+  /* Mobile menu improvements */
+  .mobile-menu {
+    @apply md:hidden absolute top-full left-0 w-full bg-theme-navy/95 backdrop-blur-sm border-b border-theme-navy/30 shadow-lg z-50;
+  }
+  
+  .mobile-menu-content {
+    @apply px-4 py-4 space-y-4 max-h-[80vh] overflow-y-auto;
+  }
+  
+  .mobile-menu-item {
+    @apply block text-white/80 hover:text-theme-emerald transition-all duration-200 font-medium py-3 px-2 rounded-lg hover:bg-white/10;
+  }
+  
+  .mobile-menu-divider {
+    @apply border-t border-white/20 pt-4 mt-4;
+  }
+  
+  .mobile-menu-user {
+    @apply text-sm text-white/70 font-medium mb-3 px-2;
+  }
+  
+  .mobile-menu-button {
+    @apply w-full text-left px-4 py-3 text-sm font-medium text-white bg-theme-emerald hover:bg-theme-emerald-dark rounded-lg transition-all duration-200 shadow-md hover:shadow-lg;
   }
   
   /* Responsive table */
@@ -214,12 +340,76 @@ All colors MUST be HSL.
   
   /* Responsive spacing */
   .mobile-section {
-    @apply py-8 sm:py-12 lg:py-16;
+    @apply py-6 sm:py-8 lg:py-12;
   }
   
   .mobile-content {
-    @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
+    @apply px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto;
   }
+  
+  /* Responsive cards and content */
+  .responsive-card {
+    @apply w-full bg-white/95 backdrop-blur-sm border-0 shadow-xl transition-all duration-500 ease-in-out;
+  }
+  
+  .responsive-card-header {
+    @apply text-center pb-4 sm:pb-6;
+  }
+  
+  .responsive-card-content {
+    @apply p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 lg:space-y-8;
+  }
+  
+  /* Mobile hamburger menu button */
+  .hamburger-button {
+    @apply md:hidden p-2 text-white hover:text-theme-emerald transition-colors rounded-lg hover:bg-white/10 min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+  
+  /* Fix for container overflow */
+  .overflow-fix {
+    @apply w-full max-w-full overflow-x-hidden;
+  }
+  
+  /* Mobile-first container classes */
+  .mobile-page {
+    @apply min-h-screen w-full overflow-x-hidden;
+  }
+  
+  .mobile-main {
+    @apply container mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 lg:py-8 max-w-6xl overflow-x-hidden;
+  }
+  
+  /* Better responsive navbar for all screen sizes */
+  .navbar-container {
+    @apply w-full px-4 sm:px-6 py-4 backdrop-blur-sm border-b bg-theme-navy/95 border-theme-navy/30 shadow-lg relative;
+  }
+  
+  .navbar-content {
+    @apply flex items-center justify-between max-w-7xl mx-auto;
+  }
+  
+  .navbar-brand {
+    @apply flex items-center space-x-3 shrink-0;
+  }
+  
+  .navbar-menu-desktop {
+    @apply hidden md:flex items-center space-x-4 lg:space-x-6;
+  }
+  
+  .navbar-user-section {
+    @apply flex items-center space-x-3 pl-3 md:pl-4 border-l border-white/20;
+  }
+  
+  /* Responsive text utilities */
+  .responsive-title {
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900;
+  }
+  
+  .responsive-subtitle {
+    @apply text-sm sm:text-base md:text-lg text-gray-700 font-medium;
+  }
+  
+  /* Mobile navigation alignment fixes - now handled inline in components */
 }
 
 

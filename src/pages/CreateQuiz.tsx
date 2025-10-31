@@ -15,6 +15,7 @@ import { Plus, X, ChevronLeft, ChevronRight, BookOpen, Settings, FileText, Check
 import { quizApi } from "@/lib/api-client";
 import { toast } from "sonner";
 import type { QuestionCreate } from "@/lib/api-types";
+import ChatbotIcon from "@/components/ChatbotIcon";
 
 interface Question {
   id: string;
@@ -107,11 +108,11 @@ const CreateQuiz = () => {
 
   const getStepIcon = (step: number) => {
     switch (step) {
-      case 1: return <FileText className="w-5 h-5" />;
-      case 2: return <Settings className="w-5 h-5" />;
-      case 3: return <BookOpen className="w-5 h-5" />;
-      case 4: return <CheckCircle className="w-5 h-5" />;
-      default: return <FileText className="w-5 h-5" />;
+      case 1: return <FileText className="w-full h-full" />;
+      case 2: return <Settings className="w-full h-full" />;
+      case 3: return <BookOpen className="w-full h-full" />;
+      case 4: return <CheckCircle className="w-full h-full" />;
+      default: return <FileText className="w-full h-full" />;
     }
   };
 
@@ -281,24 +282,36 @@ const CreateQuiz = () => {
     toast.success("Sample CSV downloaded! Make sure to use commas, not tabs, as separators.");
   };
 
+  const handleChatbotQuizCreated = (quizId: string, quizTitle: string) => {
+    // Show success message and redirect to My Quizzes
+    toast.success(`Quiz "${quizTitle}" created successfully! Redirecting to My Quizzes...`, {
+      duration: 3000,
+    });
+    
+    // Redirect after a short delay
+    setTimeout(() => {
+      navigate('/my-quizzes');
+    }, 1500);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-x-hidden">
+    <div className="mobile-page bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <Navigation />
       
-      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-6xl overflow-x-hidden">
+      <main className="mobile-main">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
+          <h1 className="responsive-title mb-2 sm:mb-3">
             Create a New Quiz
           </h1>
-          <p className="text-base sm:text-lg text-gray-700 font-medium">
+          <p className="responsive-subtitle">
             Build engaging quizzes with our step-by-step wizard
           </p>
         </div>
 
         {/* Progress Steps */}
         <div className="mb-6 sm:mb-8 overflow-hidden">
-          <div className="flex items-center justify-between mb-4 relative px-2 sm:px-0">
+          <div className="step-container">
             {Array.from({ length: totalSteps }, (_, index) => {
               const step = index + 1;
               const isActive = step === currentStep;
@@ -308,7 +321,7 @@ const CreateQuiz = () => {
               return (
                 <div key={step} className="flex flex-col items-center flex-1 relative z-10">
                   <div className={`
-                    flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full border-2 transition-all duration-300
+                    step-circle transition-all duration-300
                     ${isActive 
                       ? 'bg-theme-emerald border-theme-emerald text-white shadow-lg scale-110' 
                       : isCompleted 
@@ -319,14 +332,16 @@ const CreateQuiz = () => {
                     }
                   `}>
                     {isCompleted ? (
-                      <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 lg:w-6 lg:h-6" />
+                      <div className="step-icon">
+                        <CheckCircle className="w-full h-full" />
+                      </div>
                     ) : (
-                      <div className="w-3 h-3 sm:w-4 sm:h-4 lg:w-6 lg:h-6">
+                      <div className="step-icon">
                         {getStepIcon(step)}
                       </div>
                     )}
                   </div>
-                  <div className="mt-1 sm:mt-2 text-center max-w-[60px] sm:max-w-[100px] lg:max-w-[120px]">
+                  <div className="step-text">
                     <div className={`text-xs sm:text-sm font-medium truncate ${isActive ? 'text-theme-emerald' : isCompleted ? 'text-green-600' : 'text-gray-600'}`}>
                       <span className="hidden sm:inline">Step </span>{step}
                     </div>
@@ -339,7 +354,7 @@ const CreateQuiz = () => {
             })}
             
             {/* Connector Lines */}
-            <div className="absolute top-6 left-0 right-0 h-0.5 bg-gray-300 z-0" style={{ transform: 'translateY(-50%)' }}>
+            <div className="step-progress-line">
               <div 
                 className="h-full bg-gradient-to-r from-theme-emerald to-green-500 transition-all duration-500 ease-out"
                 style={{ width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%` }}
@@ -359,15 +374,15 @@ const CreateQuiz = () => {
         <div className="min-h-[600px] overflow-hidden">
           {/* Step 1: Basic Information */}
           {currentStep === 1 && (
-            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl transition-all duration-500 ease-in-out w-full">
-              <CardHeader className="text-center pb-6">
-                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-                  <FileText className="w-8 h-8 text-white" />
+            <Card className="responsive-card">
+              <CardHeader className="responsive-card-header">
+                <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+                  <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <CardTitle className="text-2xl text-gray-900">Basic Information</CardTitle>
-                <p className="text-gray-700 font-medium">Let's start with the fundamentals of your quiz</p>
+                <CardTitle className="responsive-title">Basic Information</CardTitle>
+                <p className="responsive-subtitle">Let's start with the fundamentals of your quiz</p>
               </CardHeader>
-              <CardContent className="p-8 space-y-8">
+              <CardContent className="responsive-card-content">
                 <div className="grid gap-8 w-full">
                   <div className="space-y-3">
                     <Label htmlFor="quiz-title" className="text-base font-semibold text-gray-800">Quiz Title *</Label>
@@ -1021,6 +1036,9 @@ const CreateQuiz = () => {
           </Button>
         </div>
       </main>
+      
+      {/* Chatbot Icon - Only visible on CreateQuiz page */}
+      <ChatbotIcon onQuizCreated={handleChatbotQuizCreated} />
     </div>
   );
 };

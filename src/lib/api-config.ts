@@ -83,6 +83,11 @@ export const API_ENDPOINTS = {
     GLOBAL_LEADERBOARD: '/results/leaderboards/global',
     QUIZ_LEADERBOARD: (quizId: string) => `/results/leaderboards/quiz/${quizId}`,
     USER_STATS: '/results/stats/user'
+  },
+  
+  CHATBOT: {
+    GREETING: '/chatbot/',
+    GENERATE: '/chatbot/generate'
   }
 };
 

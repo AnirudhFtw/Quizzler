@@ -241,45 +241,45 @@ const HostLiveQuiz: React.FC = () => {
     <div className="min-h-screen bg-white flex flex-col">
       {/* Navigation */}
       <nav className="bg-white/95 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-theme-emerald to-theme-emerald/80 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">Q</span>
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-theme-emerald to-theme-emerald/80 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm sm:text-lg">Q</span>
             </div>
-            <span className="text-2xl font-bold text-theme-navy">Quizzler</span>
+            <span className="text-lg sm:text-2xl font-bold text-theme-navy">Quizzler</span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1 sm:gap-2">
             <Button 
               variant="outline" 
               onClick={() => navigate('/dashboard')}
-              className="flex items-center gap-2 border-theme-emerald text-theme-emerald hover:bg-theme-emerald hover:text-white transition-colors"
+              className="flex items-center gap-1 sm:gap-2 border-theme-emerald text-theme-emerald hover:bg-theme-emerald hover:text-white transition-colors text-sm sm:text-base px-2 sm:px-4 py-1 sm:py-2"
             >
-              <Home className="w-4 h-4" />
-              Dashboard
+              <Home className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Dashboard</span>
             </Button>
             {isConnected && (
               <Button 
                 variant="destructive" 
                 onClick={closeRoom}
-                className="flex items-center gap-2"
+                className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base px-2 sm:px-4 py-1 sm:py-2"
               >
-                <X className="w-4 h-4" />
-                Close Room
+                <X className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden xs:inline">Close Room</span>
               </Button>
             )}
           </div>
         </div>
       </nav>
 
-      <main className="flex-1 px-6 py-12">
+      <main className="flex-1 px-3 sm:px-6 py-6 sm:py-12">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-theme-navy mb-4">Host Live Quiz</h1>
-            <p className="text-gray-600 text-lg">Create and manage real-time quiz sessions</p>
+          <div className="text-center mb-6 sm:mb-12">
+            <h1 className="text-2xl sm:text-4xl font-bold text-theme-navy mb-2 sm:mb-4">Host Live Quiz</h1>
+            <p className="text-gray-600 text-base sm:text-lg">Create and manage real-time quiz sessions</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Room Status */}
             <div className="lg:col-span-1">
               <Card className="border-gray-200 shadow-sm">
@@ -292,8 +292,8 @@ const HostLiveQuiz: React.FC = () => {
                 <CardContent className="space-y-4">
                 {!isConnected ? (
                   <div className="text-center">
-                    <p className="text-gray-600 mb-4">Create a room to start hosting</p>
-                    <Button onClick={createRoom} className="w-full bg-theme-emerald hover:bg-theme-emerald/90 text-white">
+                    <p className="text-gray-600 mb-4 text-sm sm:text-base">Create a room to start hosting</p>
+                    <Button onClick={createRoom} className="w-full bg-theme-emerald hover:bg-theme-emerald/90 text-white h-10 sm:h-auto text-sm sm:text-base">
                       Create Room
                     </Button>
                   </div>
@@ -302,25 +302,25 @@ const HostLiveQuiz: React.FC = () => {
                     <div className="text-center">
                       <Label className="text-sm text-gray-600">Room Code</Label>
                       <div className="flex items-center gap-2 mt-1">
-                        <div className="text-2xl font-bold text-theme-emerald bg-theme-emerald/10 px-4 py-2 rounded-lg flex-1 text-center border border-theme-emerald/20">
+                        <div className="text-lg sm:text-2xl font-bold text-theme-emerald bg-theme-emerald/10 px-3 sm:px-4 py-2 rounded-lg flex-1 text-center border border-theme-emerald/20">
                           {roomCode}
                         </div>
-                        <Button size="sm" variant="outline" onClick={copyRoomCode}>
-                          <Copy className="w-4 h-4" />
+                        <Button size="sm" variant="outline" onClick={copyRoomCode} className="h-10 w-10 p-0">
+                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
                         </Button>
                       </div>
                     </div>
 
                     <Separator />
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-green-600">{playerCount}</div>
-                        <div className="text-sm text-gray-600">Players</div>
+                        <div className="text-xl sm:text-2xl font-bold text-green-600">{playerCount}</div>
+                        <div className="text-xs sm:text-sm text-gray-600">Players</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-orange-600">{answeredCount}</div>
-                        <div className="text-sm text-gray-600">Answered</div>
+                        <div className="text-xl sm:text-2xl font-bold text-orange-600">{answeredCount}</div>
+                        <div className="text-xs sm:text-sm text-gray-600">Answered</div>
                       </div>
                     </div>
 
@@ -348,22 +348,22 @@ const HostLiveQuiz: React.FC = () => {
                   Create and send questions to connected players
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 p-4 sm:p-6">
                 <div>
-                  <Label htmlFor="question">Question</Label>
+                  <Label htmlFor="question" className="text-sm sm:text-base">Question</Label>
                   <Textarea
                     id="question"
                     placeholder="Enter your question here..."
                     value={questionForm.question}
                     onChange={(e) => setQuestionForm({ ...questionForm, question: e.target.value })}
-                    className="mt-1"
+                    className="mt-1 text-sm sm:text-base"
                     rows={3}
                   />
                 </div>
 
                 <div>
-                  <Label>Answer Options</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+                  <Label className="text-sm sm:text-base">Answer Options</Label>
+                  <div className="grid grid-cols-1 gap-3 mt-2">
                     {questionForm.options.map((option, index) => (
                       <div key={index} className="flex items-center gap-2">
                         <Badge variant={questionForm.correct_answer === index ? "default" : "outline"}>
@@ -384,22 +384,24 @@ const HostLiveQuiz: React.FC = () => {
                   <RadioGroup 
                     value={questionForm.correct_answer.toString()} 
                     onValueChange={(value) => setQuestionForm({ ...questionForm, correct_answer: parseInt(value) })}
-                    className="flex gap-4 mt-2"
+                    className="mt-2"
                   >
-                    {questionForm.options.map((_, index) => (
-                      <div key={index} className="flex items-center space-x-2">
-                        <RadioGroupItem value={index.toString()} id={`option-${index}`} />
-                        <Label htmlFor={`option-${index}`}>
-                          Option {String.fromCharCode(65 + index)}
-                        </Label>
-                      </div>
-                    ))}
+                    <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-2">
+                      {questionForm.options.map((_, index) => (
+                        <div key={index} className="flex items-center space-x-2">
+                          <RadioGroupItem value={index.toString()} id={`option-${index}`} />
+                          <Label htmlFor={`option-${index}`} className="text-sm">
+                            Option {String.fromCharCode(65 + index)}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
                   </RadioGroup>
                 </div>
 
                 <div>
-                  <Label htmlFor="time-limit" className="flex items-center gap-2">
-                    <Clock className="w-4 h-4" />
+                  <Label htmlFor="time-limit" className="flex items-center gap-2 text-sm sm:text-base">
+                    <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                     Time Limit (seconds)
                   </Label>
                   <Input
@@ -409,14 +411,14 @@ const HostLiveQuiz: React.FC = () => {
                     max="120"
                     value={questionForm.time_limit}
                     onChange={(e) => setQuestionForm({ ...questionForm, time_limit: parseInt(e.target.value) || 30 })}
-                    className="mt-1 w-32"
+                    className="mt-1 w-24 sm:w-32 text-sm sm:text-base"
                   />
                 </div>
 
                 <Button 
                   onClick={sendQuestion} 
                   disabled={!isConnected || isQuestionActive}
-                  className="w-full bg-theme-emerald hover:bg-theme-emerald/90 text-white disabled:bg-gray-300"
+                  className="w-full bg-theme-emerald hover:bg-theme-emerald/90 text-white disabled:bg-gray-300 h-10 sm:h-auto text-sm sm:text-base"
                 >
                   Send Question to Players
                 </Button>
